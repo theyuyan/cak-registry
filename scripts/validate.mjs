@@ -18,5 +18,6 @@ for (const file of files) {
   const d = 'sha256:' + createHash('sha256').update(Buffer.from(canonicalize({ name: c.name, version: c.version, inputSchema: c.inputSchema, outputSchema: c.outputSchema, sideEffects: c.sideEffects, idempotent: c.idempotent, permissions: c.permissions ?? [] }), 'utf8')).digest('hex');
   ok(d === c.schemaDigest, `contract ${c.name}@${c.version} digest`);
 }
+for (const p of idx.plugins) { const args = (p.entrypoint?.args ?? []).join(' '); if (p.entrypoint?.type === 'subprocess' && /\bdist\//.test(args) && Array.isArray(p.install?.build) && p.install.build.length === 0) ok(false, `plugin ${p.id}: 入口在 dist/ 但 install.build 为空（会装出没构建的空壳）`); }
 for (const p of idx.plugins) for (const c of p.contracts) ok([...seen.keys()].some(k => k.startsWith(c.name + '@')), `plugin ${p.id}: 契约 ${c.name} 在 contracts/ 里有定义`);
 console.log(bad ? `FAILED ${bad}` : 'registry OK'); process.exit(bad ? 1 : 0);
