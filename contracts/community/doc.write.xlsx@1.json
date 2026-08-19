@@ -1,0 +1,115 @@
+{
+  "name": "doc.write.xlsx",
+  "version": "1.0.0",
+  "description": "把二维表写成 Excel 工作簿（.xlsx）：每个 sheet 给表头 columns 与数据 rows（单元格 string|number|boolean|null）；表头加粗、默认冻结首行、按内容自动列宽（中文按 2 宽）；数字保持数字，日期字符串不自动转。只写到工作区内；已存在默认不覆盖。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "outPath",
+      "sheets"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "outPath": {
+        "type": "string",
+        "minLength": 6,
+        "pattern": "\\.xlsx$",
+        "description": "输出路径，相对工作区，须以 .xlsx 结尾"
+      },
+      "sheets": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 100,
+        "items": {
+          "type": "object",
+          "required": [
+            "name",
+            "columns",
+            "rows"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 31,
+              "description": "工作表名（≤31 字，不含 [ ] : * ? / \\）"
+            },
+            "columns": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              },
+              "description": "表头"
+            },
+            "rows": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                }
+              },
+              "description": "数据行（不含表头）"
+            },
+            "widths": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 1
+              },
+              "description": "列宽（字符数），缺省按内容自动"
+            },
+            "freezeHeader": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      },
+      "overwrite": {
+        "type": "boolean",
+        "default": false
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "outPath",
+      "bytes",
+      "sheets",
+      "rows"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "outPath": {
+        "type": "string"
+      },
+      "bytes": {
+        "type": "integer"
+      },
+      "sheets": {
+        "type": "integer"
+      },
+      "rows": {
+        "type": "integer",
+        "description": "所有 sheet 的数据行总数（不含表头）"
+      }
+    }
+  },
+  "permissions": [
+    "fs.write"
+  ],
+  "sideEffects": "write",
+  "idempotent": false,
+  "defaultTimeoutMs": 60000,
+  "async": false,
+  "schemaDigest": "sha256:7606feb8aadde615e2765cc64f9dc30307a77c2a918b5139f308b785a48ca6f7"
+}

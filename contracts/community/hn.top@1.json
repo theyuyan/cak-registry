@@ -1,0 +1,100 @@
+{
+  "name": "hn.top",
+  "version": "1.0.0",
+  "description": "取 Hacker News 榜单（官方 Firebase API，免 key）：top / new / best / ask / show 五个榜，返回标题、原文链接、HN 讨论页链接、分数、作者、评论数、时间；可按 minScore 过滤。",
+  "inputSchema": {
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+      "list": {
+        "enum": [
+          "top",
+          "new",
+          "best",
+          "ask",
+          "show"
+        ],
+        "default": "top"
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 50,
+        "default": 20
+      },
+      "minScore": {
+        "type": "integer",
+        "minimum": 0,
+        "default": 0,
+        "description": "只要分数 ≥ 此值的条目"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "list",
+      "items"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "list": {
+        "type": "string"
+      },
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "title",
+            "hnUrl",
+            "score",
+            "by",
+            "comments",
+            "time"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "title": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string",
+              "description": "原文链接；Ask HN 等站内帖没有"
+            },
+            "hnUrl": {
+              "type": "string",
+              "description": "HN 讨论页"
+            },
+            "score": {
+              "type": "integer"
+            },
+            "by": {
+              "type": "string"
+            },
+            "comments": {
+              "type": "integer"
+            },
+            "time": {
+              "type": "string",
+              "description": "ISO 时间"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [
+    "net.fetch"
+  ],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 20000,
+  "async": false,
+  "schemaDigest": "sha256:a2628def292f642be49332a18166601da08b35c93d248f65d735a5aaaa9a216c"
+}

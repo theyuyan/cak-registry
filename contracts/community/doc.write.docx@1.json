@@ -1,0 +1,75 @@
+{
+  "name": "doc.write.docx",
+  "version": "1.0.0",
+  "description": "把 Markdown 子集写成 Word 文档（.docx）：# / ## / ### 标题、段落、- 与 1. 列表（可嵌套一层）、**粗体**、*斜体*、`行内代码`、``` 代码块、> 引用、GFM 表格、--- 分页符、![图](工作区内 png/jpg)。只写到工作区内；已存在默认不覆盖（overwrite:true 才覆盖）。返回字节数与标题/表格/图片计数。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "outPath",
+      "markdown"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "outPath": {
+        "type": "string",
+        "minLength": 6,
+        "pattern": "\\.docx$",
+        "description": "输出路径，相对工作区，须以 .docx 结尾"
+      },
+      "markdown": {
+        "type": "string",
+        "minLength": 1,
+        "description": "文档内容（Markdown 子集）"
+      },
+      "title": {
+        "type": "string",
+        "description": "文档属性里的标题（可选）"
+      },
+      "author": {
+        "type": "string",
+        "description": "文档属性里的作者（可选）"
+      },
+      "overwrite": {
+        "type": "boolean",
+        "default": false,
+        "description": "已存在时是否覆盖；默认 false → 已存在则报错"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "outPath",
+      "bytes",
+      "headings",
+      "tables",
+      "images"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "outPath": {
+        "type": "string"
+      },
+      "bytes": {
+        "type": "integer"
+      },
+      "headings": {
+        "type": "integer"
+      },
+      "tables": {
+        "type": "integer"
+      },
+      "images": {
+        "type": "integer"
+      }
+    }
+  },
+  "permissions": [
+    "fs.write"
+  ],
+  "sideEffects": "write",
+  "idempotent": false,
+  "defaultTimeoutMs": 30000,
+  "async": false,
+  "schemaDigest": "sha256:aa5c1221bebeaadd132d1885bc940fb8c2467d29e4199ee1fe26371ddf33f9c8"
+}

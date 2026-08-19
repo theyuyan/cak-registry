@@ -1,0 +1,63 @@
+{
+  "name": "desktop.notify",
+  "version": "1.0.0",
+  "description": "在用户桌面弹一条系统通知（macOS 通知中心 / Linux notify-send / Windows Toast）。用于长任务跑完提醒用户。title ≤100 字、message ≤500 字；subtitle 仅 macOS 显示（其他平台并入正文首行）；sound 默认不响。副作用 external：默认需要审批。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "title",
+      "message"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100
+      },
+      "message": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "subtitle": {
+        "type": "string",
+        "maxLength": 100
+      },
+      "sound": {
+        "type": "boolean",
+        "default": false
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "ok",
+      "platform",
+      "method"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "ok": {
+        "type": "boolean"
+      },
+      "platform": {
+        "enum": [
+          "darwin",
+          "linux",
+          "win32"
+        ]
+      },
+      "method": {
+        "type": "string"
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "external",
+  "idempotent": false,
+  "defaultTimeoutMs": 15000,
+  "async": false,
+  "schemaDigest": "sha256:2255233f772530196f232687b5b1b72807e1381e8e2f760a0147097792da9435"
+}

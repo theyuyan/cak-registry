@@ -1,0 +1,94 @@
+{
+  "name": "docker.ps",
+  "version": "1.0.0",
+  "description": "列出本机 docker 容器（走本机 docker CLI，DOCKER_HOST/DOCKER_CONTEXT 由环境决定）。默认只列运行中的，all=true 含已停止；filter 可以是 docker --filter 语法（如 status=exited、label=app=web）或名字子串；每条给 id(12位)/name/image/status/state/ports/createdAt。只读、免审批。docker 没装或 daemon 没起 → CAPABILITY_ERROR。",
+  "inputSchema": {
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+      "all": {
+        "type": "boolean",
+        "default": false,
+        "description": "true=含已停止/已创建的容器；默认只列运行中"
+      },
+      "filter": {
+        "type": "string",
+        "description": "含 = 时按 docker --filter 语法透传（status=exited / name=web / label=k=v / ancestor=镜像）；否则当作容器名子串（不区分大小写）"
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 200,
+        "default": 50,
+        "description": "最多返回条数"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "containers"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "containers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "name",
+            "image",
+            "status",
+            "state",
+            "ports",
+            "createdAt"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "短 ID（12 位）"
+            },
+            "name": {
+              "type": "string"
+            },
+            "image": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "description": "docker 原话，如 \"Up 3 hours\" / \"Exited (0) 2 days ago\""
+            },
+            "state": {
+              "enum": [
+                "running",
+                "exited",
+                "paused",
+                "restarting",
+                "created",
+                "dead",
+                "removing",
+                "unknown"
+              ]
+            },
+            "ports": {
+              "type": "string",
+              "description": "端口映射原话，无映射为空串"
+            },
+            "createdAt": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "read",
+  "idempotent": false,
+  "defaultTimeoutMs": 30000,
+  "async": false,
+  "schemaDigest": "sha256:89f22703b56523e89fedc767de520c3f2ed8ae7195735f121504aa0eb25671e8"
+}

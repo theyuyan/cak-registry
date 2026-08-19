@@ -1,0 +1,58 @@
+{
+  "name": "ssh.hosts",
+  "version": "1.0.0",
+  "description": "列出 ~/.cak/ssh.json 里配置的远程主机别名（alias、user@host、说明、是否允许 sudo）以及是否允许直连 raw 目标。用 ssh.exec / ssh.fetch 前先调这个看能连哪些主机。不显示端口和密钥路径。",
+  "inputSchema": {
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {}
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "hosts",
+      "allowRawHosts"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "hosts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "alias",
+            "target",
+            "sudo"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "alias": {
+              "type": "string"
+            },
+            "target": {
+              "type": "string",
+              "description": "user@host（脱敏：无端口无密钥路径）"
+            },
+            "description": {
+              "type": "string"
+            },
+            "sudo": {
+              "type": "boolean",
+              "description": "该主机是否允许 ssh.exec 的 sudo:true"
+            }
+          }
+        }
+      },
+      "allowRawHosts": {
+        "type": "boolean"
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "read",
+  "idempotent": true,
+  "async": false,
+  "defaultTimeoutMs": 5000,
+  "schemaDigest": "sha256:b574774dc61b54afba73682f591eb733669d78ee0f2d4887307678612c779352"
+}

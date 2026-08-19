@@ -1,0 +1,115 @@
+{
+  "name": "feed.read",
+  "version": "1.0.0",
+  "description": "读一个公开的 RSS 2.0 / Atom / JSON Feed 订阅源（免 key），返回源标题与条目列表（标题、链接、时间、作者、正文摘要已去 HTML 标签并截断）。可按 since 只取某时刻之后的条目、按 limit 限量、fullText 取全文。拒绝内网/回环地址，最多跟随 3 次重定向，2MB 上限。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "url"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "url": {
+        "type": "string",
+        "minLength": 8,
+        "pattern": "^https?://",
+        "description": "订阅源地址（http/https）"
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 20,
+        "description": "最多返回多少条（按源里的顺序）"
+      },
+      "since": {
+        "type": "string",
+        "description": "ISO 时间；只要发布时间在此之后的条目（没有发布时间的条目保留）"
+      },
+      "fullText": {
+        "type": "boolean",
+        "default": false,
+        "description": "true=条目正文优先取全文（content:encoded / content）而不只摘要"
+      },
+      "maxCharsPerItem": {
+        "type": "integer",
+        "minimum": 50,
+        "maximum": 20000,
+        "default": 1200,
+        "description": "每条 summary 最多保留多少字符"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "title",
+      "url",
+      "kind",
+      "items"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "源标题"
+      },
+      "url": {
+        "type": "string",
+        "description": "最终取到的源地址（跟随重定向后）"
+      },
+      "kind": {
+        "enum": [
+          "rss",
+          "atom",
+          "json"
+        ]
+      },
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "title",
+            "link",
+            "summary"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "link": {
+              "type": "string"
+            },
+            "published": {
+              "type": "string",
+              "description": "ISO 时间；源里没有或解析不了就没有这个字段"
+            },
+            "author": {
+              "type": "string"
+            },
+            "summary": {
+              "type": "string",
+              "description": "去标签的正文/摘要，≤ maxCharsPerItem"
+            },
+            "categories": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [
+    "net.fetch"
+  ],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 20000,
+  "async": false,
+  "schemaDigest": "sha256:8a0e309a61e61ffcd59091abbdf22dd8a769f9968706e78a963a0f14cbc529f6"
+}

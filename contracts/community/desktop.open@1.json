@@ -1,0 +1,60 @@
+{
+  "name": "desktop.open",
+  "version": "1.0.0",
+  "description": "用系统默认程序打开一个文件或网址（macOS open / Linux xdg-open / Windows start）。target 只能是工作区内的文件路径（相对 CAK_WORKSPACE）或 http(s) 网址；file:/javascript: 等其他 scheme 一律拒绝。app 仅 macOS 有效（open -a 指定应用）。会在用户屏幕上弹出窗口，副作用 external：默认需要审批。设 DESKTOP_DRY_RUN=1 时只校验不真开（method=dry-run）。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "target"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "target": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096
+      },
+      "app": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "ok",
+      "platform",
+      "target",
+      "method"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "ok": {
+        "type": "boolean"
+      },
+      "platform": {
+        "enum": [
+          "darwin",
+          "linux",
+          "win32"
+        ]
+      },
+      "target": {
+        "type": "string"
+      },
+      "method": {
+        "type": "string"
+      }
+    }
+  },
+  "permissions": [
+    "fs.read"
+  ],
+  "sideEffects": "external",
+  "idempotent": false,
+  "defaultTimeoutMs": 15000,
+  "async": false,
+  "schemaDigest": "sha256:616b6a3f490ba2160f8d4c58093cea8c396175ca58b931fd1644fe2211d68d9c"
+}

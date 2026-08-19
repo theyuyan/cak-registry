@@ -1,0 +1,72 @@
+{
+  "name": "webhook.list",
+  "version": "1.0.0",
+  "description": "列出已注册的 webhook 及命中统计（hits / lastHitAt / lastStatus / lastError）与监听状态；不回显 token。",
+  "inputSchema": {
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {}
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "listening",
+      "hooks"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "listening": {
+        "type": "boolean"
+      },
+      "baseUrl": {
+        "type": "string"
+      },
+      "hooks": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "name",
+            "createdAt",
+            "hits"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "agent": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string"
+            },
+            "hits": {
+              "type": "integer"
+            },
+            "lastHitAt": {
+              "type": "string"
+            },
+            "lastStatus": {
+              "enum": [
+                "delivered",
+                "error",
+                "rate_limited"
+              ]
+            },
+            "lastError": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 5000,
+  "async": false,
+  "schemaDigest": "sha256:f5c13610c9abdeb4ae62c7be683999b7f4cced6f8f78d10ec5253ff7cfb4b147"
+}

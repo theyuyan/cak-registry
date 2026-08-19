@@ -1,0 +1,105 @@
+{
+  "name": "ssh.exec",
+  "version": "1.0.0",
+  "description": "经本机 ssh 在远程主机上执行一条命令并返回 exitCode/stdout/stderr。host 用 ~/.cak/ssh.json 里的主机别名（先用 ssh.hosts 看有哪些）；argv 是远程命令的参数数组，插件会按 shell 单引号规则拼成远程命令串，不要自己拼字符串。只走密钥（BatchMode，永不弹密码），sudo 只有该主机配置 allowSudo 且远端免密 sudo 时才行。副作用 external：默认需要审批。ssh 自身连不上时 exitCode=255、原因在 stderr。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "host",
+      "argv"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "host": {
+        "type": "string",
+        "minLength": 1,
+        "description": "主机别名（ssh.hosts 列出的 alias）；只有配置 allowRawHosts:true 时才接受 user@host 直连目标"
+      },
+      "argv": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "string"
+        },
+        "description": "远程命令 argv，如 [\"systemctl\",\"status\",\"nginx\"]；每个元素会被单引号安全包裹，管道/重定向要写成 [\"sh\",\"-c\",\"a | b\"]"
+      },
+      "cwd": {
+        "type": "string",
+        "minLength": 1,
+        "description": "远程工作目录，前缀 cd <dir> &&"
+      },
+      "timeoutMs": {
+        "type": "integer",
+        "minimum": 1000,
+        "maximum": 1800000,
+        "default": 120000
+      },
+      "stdin": {
+        "type": "string",
+        "description": "喂给远程命令的标准输入"
+      },
+      "maxOutputChars": {
+        "type": "integer",
+        "minimum": 200,
+        "maximum": 200000,
+        "default": 20000,
+        "description": "stdout / stderr 各自的上限，超出截断并置 truncated"
+      },
+      "sudo": {
+        "type": "boolean",
+        "default": false,
+        "description": "远程命令前加 sudo -n（需该主机 allowSudo:true）"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "host",
+      "command",
+      "exitCode",
+      "stdout",
+      "stderr",
+      "truncated",
+      "timedOut",
+      "durationMs"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "host": {
+        "type": "string"
+      },
+      "command": {
+        "type": "string",
+        "description": "实际发到远端的命令串"
+      },
+      "exitCode": {
+        "type": "integer",
+        "description": "远程命令退出码；255=ssh 本身失败（连不上/认证失败/主机指纹不符）；-1=被杀"
+      },
+      "stdout": {
+        "type": "string"
+      },
+      "stderr": {
+        "type": "string"
+      },
+      "truncated": {
+        "type": "boolean"
+      },
+      "timedOut": {
+        "type": "boolean"
+      },
+      "durationMs": {
+        "type": "integer"
+      }
+    }
+  },
+  "permissions": [
+    "shell.exec"
+  ],
+  "sideEffects": "external",
+  "idempotent": false,
+  "async": false,
+  "defaultTimeoutMs": 300000,
+  "schemaDigest": "sha256:2b00d0de8d7669f0533e5e2829b66d608a2863b19af24bd5a56b09fb36663a5f"
+}

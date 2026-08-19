@@ -1,0 +1,75 @@
+{
+  "name": "webhook.create",
+  "version": "1.0.0",
+  "description": "注册一个本机 HTTP webhook：外部系统（CI、Git 平台、监控、Zapier/n8n、脚本、手机快捷指令）POST 到返回的 url 时，插件把 prompt 模板渲染后作为一句用户输入投递给 agent 会话，把它叫醒。模板占位：{{body}}（请求体文本，JSON 会美化）、{{json.a.b.0}}（JSON 字段）、{{header.x-name}}、{{query.k}}；缺失留空。出参 url 里含随机 token，只在这里给一次（webhook.list 不回显）；默认只监听 127.0.0.1。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "name",
+      "prompt"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]{1,32}$",
+        "description": "别名（小写字母/数字/连字符，1-32 位），也是 URL 的一段，如 ci-failed"
+      },
+      "prompt": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4000,
+        "description": "收到请求时投递给 agent 的模板，如“CI 失败了，仓库 {{json.repository}}，去查原因：{{body}}”"
+      },
+      "agent": {
+        "type": "string",
+        "minLength": 1,
+        "description": "目标 agent 名；缺省=所属内核的默认 agent"
+      },
+      "maxBodyBytes": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 10485760,
+        "default": 65536,
+        "description": "请求体上限（字节），超过回 413"
+      },
+      "rateLimitPerMinute": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 6000,
+        "default": 30,
+        "description": "每分钟最多投递次数，超过回 429"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "name",
+      "url",
+      "token",
+      "createdAt"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "url": {
+        "type": "string"
+      },
+      "token": {
+        "type": "string"
+      },
+      "createdAt": {
+        "type": "string"
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "write",
+  "idempotent": false,
+  "defaultTimeoutMs": 15000,
+  "async": false,
+  "schemaDigest": "sha256:799cfe6b10431734da263de786a33021a4becc1d46dc5d7f9b7a68c4eb15550d"
+}

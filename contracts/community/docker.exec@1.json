@@ -1,0 +1,98 @@
+{
+  "name": "docker.exec",
+  "version": "1.0.0",
+  "description": "在运行中的容器里执行一条命令（docker exec，argv 数组、不经 shell；要管道/通配符请自己写 [\"sh\",\"-c\",\"…\"]）。可指定 workdir / user / stdin；超时会杀掉本机 docker exec 客户端进程组（容器内进程不保证一起死）。返回 exitCode/stdout/stderr（超长保留尾部并置 truncated）。副作用 external：默认需要审批。容器不存在或没在跑 / docker 不可用 → CAPABILITY_ERROR。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "container",
+      "argv"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "container": {
+        "type": "string",
+        "minLength": 1,
+        "description": "容器名或 ID"
+      },
+      "argv": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "string"
+        },
+        "description": "容器内要执行的命令及参数，如 [\"ls\",\"-la\",\"/app\"]；不经 shell"
+      },
+      "workdir": {
+        "type": "string",
+        "description": "容器内工作目录（-w）"
+      },
+      "user": {
+        "type": "string",
+        "description": "以哪个用户执行（-u，用户名或 UID[:GID]）"
+      },
+      "timeoutMs": {
+        "type": "integer",
+        "minimum": 1000,
+        "maximum": 1800000,
+        "default": 60000
+      },
+      "stdin": {
+        "type": "string",
+        "description": "喂给命令的标准输入（有则加 -i）"
+      },
+      "maxOutputChars": {
+        "type": "integer",
+        "minimum": 200,
+        "maximum": 200000,
+        "default": 20000,
+        "description": "stdout 与 stderr 各自的上限，超过保留尾部"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "container",
+      "exitCode",
+      "stdout",
+      "stderr",
+      "truncated",
+      "timedOut",
+      "durationMs"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "container": {
+        "type": "string"
+      },
+      "exitCode": {
+        "type": "integer",
+        "description": "容器内命令的退出码；超时为 -1"
+      },
+      "stdout": {
+        "type": "string"
+      },
+      "stderr": {
+        "type": "string"
+      },
+      "truncated": {
+        "type": "boolean"
+      },
+      "timedOut": {
+        "type": "boolean"
+      },
+      "durationMs": {
+        "type": "integer"
+      }
+    }
+  },
+  "permissions": [
+    "shell.exec"
+  ],
+  "sideEffects": "external",
+  "idempotent": false,
+  "defaultTimeoutMs": 300000,
+  "async": false,
+  "schemaDigest": "sha256:a520bedc1b033c7ba761ab07d4bc5ba653f0ab53ea08e467ff928b43f98bd821"
+}

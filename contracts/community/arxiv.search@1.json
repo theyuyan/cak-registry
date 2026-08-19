@@ -1,0 +1,112 @@
+{
+  "name": "arxiv.search",
+  "version": "1.0.0",
+  "description": "搜 arXiv 论文（官方 API，免 key）：支持 arXiv 查询语法（如 all:agent AND cat:cs.AI、ti:\"large language model\"），返回 id、标题、作者、时间、摘要（≤2000 字）、分类、PDF 与摘要页链接。插件内自动做 3 秒礼貌间隔。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "q"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "q": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500,
+        "description": "arXiv search_query 语法：字段前缀 all: / ti: / au: / abs: / cat:，布尔 AND / OR / ANDNOT"
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 50,
+        "default": 10
+      },
+      "sortBy": {
+        "enum": [
+          "relevance",
+          "lastUpdatedDate",
+          "submittedDate"
+        ],
+        "default": "relevance"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "q",
+      "results"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "q": {
+        "type": "string"
+      },
+      "results": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "title",
+            "authors",
+            "published",
+            "summary",
+            "categories",
+            "pdfUrl",
+            "absUrl"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "arXiv id，不带版本号，如 2401.01234 或 hep-ex/0307015"
+            },
+            "title": {
+              "type": "string"
+            },
+            "authors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "published": {
+              "type": "string",
+              "description": "ISO 时间（首次提交）"
+            },
+            "updated": {
+              "type": "string",
+              "description": "ISO 时间（最近更新）"
+            },
+            "summary": {
+              "type": "string",
+              "description": "摘要，≤ 2000 字符"
+            },
+            "categories": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "主分类在前"
+            },
+            "pdfUrl": {
+              "type": "string"
+            },
+            "absUrl": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [
+    "net.fetch"
+  ],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 20000,
+  "async": false,
+  "schemaDigest": "sha256:2f4e74c611b39f3b02a6c8605438eeb19f82f12fd9ffdfa60de868fb3b20af72"
+}

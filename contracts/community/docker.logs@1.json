@@ -1,0 +1,73 @@
+{
+  "name": "docker.logs",
+  "version": "1.0.0",
+  "description": "读某个容器的日志尾部（docker logs --tail N --timestamps，stdout/stderr 合并并按时间戳排序）。tail 默认 200 行；since 只看某时间之后（\"10m\" / \"2h\" / RFC3339）；grep 只保留含该子串的行（在 tail 取到的行里过滤）；超过 maxChars 保留尾部并置 truncated。只读、免审批。容器不存在 / docker 不可用 → CAPABILITY_ERROR。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "container"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "container": {
+        "type": "string",
+        "minLength": 1,
+        "description": "容器名或 ID"
+      },
+      "tail": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5000,
+        "default": 200,
+        "description": "取最后 N 行"
+      },
+      "since": {
+        "type": "string",
+        "description": "只看此时间之后：相对 \"10m\"/\"2h\"/\"1d\" 或绝对 RFC3339 如 2026-08-19T10:00:00"
+      },
+      "grep": {
+        "type": "string",
+        "description": "只保留含此子串的行（区分大小写；在 tail 取到的行里过滤）"
+      },
+      "maxChars": {
+        "type": "integer",
+        "minimum": 200,
+        "maximum": 200000,
+        "default": 20000,
+        "description": "text 上限，超过保留尾部"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "container",
+      "lines",
+      "text",
+      "truncated"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "container": {
+        "type": "string"
+      },
+      "lines": {
+        "type": "integer",
+        "description": "text 里的行数（过滤、截断之后）"
+      },
+      "text": {
+        "type": "string",
+        "description": "每行以时间戳开头；被截断时以 … 开头"
+      },
+      "truncated": {
+        "type": "boolean"
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "read",
+  "idempotent": false,
+  "defaultTimeoutMs": 60000,
+  "async": false,
+  "schemaDigest": "sha256:07fd80539be2c7d11adc591025970e618ac265ccf7dee9b678a12c162097041a"
+}

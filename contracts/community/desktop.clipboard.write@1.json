@@ -1,0 +1,48 @@
+{
+  "name": "desktop.clipboard.write",
+  "version": "1.0.0",
+  "description": "把一段文本写入用户系统剪贴板（macOS pbcopy / Linux xclip 或 wl-copy / Windows Set-Clipboard），会覆盖用户当前剪贴板内容。text ≤200000 字。用于把结果交给用户直接粘贴。副作用 write：默认需要审批。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "text"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "text": {
+        "type": "string",
+        "maxLength": 200000
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "ok",
+      "chars",
+      "platform"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "ok": {
+        "type": "boolean"
+      },
+      "chars": {
+        "type": "integer"
+      },
+      "platform": {
+        "enum": [
+          "darwin",
+          "linux",
+          "win32"
+        ]
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "write",
+  "idempotent": true,
+  "defaultTimeoutMs": 15000,
+  "async": false,
+  "schemaDigest": "sha256:6beb6425588f5a884f48f4c7bde42026da1c48b36551dc68bb5035ccf061fd1a"
+}

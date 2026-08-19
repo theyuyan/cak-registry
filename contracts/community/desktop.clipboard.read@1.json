@@ -1,0 +1,48 @@
+{
+  "name": "desktop.clipboard.read",
+  "version": "1.0.0",
+  "description": "读取用户系统剪贴板里的文本（macOS pbpaste / Linux xclip 或 wl-paste / Windows Get-Clipboard）。maxChars 默认 20000，超出截断并置 truncated=true；剪贴板不是文本时 text 为空串。注意：读到的内容会进入模型上下文，属隐私点。副作用 read：默认免审批。",
+  "inputSchema": {
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+      "maxChars": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000,
+        "default": 20000
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "text",
+      "truncated",
+      "platform"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "text": {
+        "type": "string"
+      },
+      "truncated": {
+        "type": "boolean"
+      },
+      "platform": {
+        "enum": [
+          "darwin",
+          "linux",
+          "win32"
+        ]
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "read",
+  "idempotent": false,
+  "defaultTimeoutMs": 15000,
+  "async": false,
+  "schemaDigest": "sha256:ffa6769072ac534fecbd6e14930e5f1b60dd7b541df760c74525733addd716cc"
+}

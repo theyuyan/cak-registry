@@ -1,0 +1,75 @@
+{
+  "name": "doc.write.html",
+  "version": "1.0.0",
+  "description": "把完整 GFM Markdown 渲染成自包含的单文件 HTML（内联 CSS，三套主题 plain/paper/dark，可打印）；工作区内的图片默认 base64 内联进文件。输出经白名单清洗（去 script/iframe/on*/javascript: 链接）。只写到工作区内；已存在默认不覆盖。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "outPath",
+      "markdown"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "outPath": {
+        "type": "string",
+        "minLength": 6,
+        "pattern": "\\.html$",
+        "description": "输出路径，相对工作区，须以 .html 结尾"
+      },
+      "markdown": {
+        "type": "string",
+        "minLength": 1,
+        "description": "完整 GFM Markdown"
+      },
+      "title": {
+        "type": "string",
+        "description": "<title>，缺省取第一个 # 标题，再缺省取文件名"
+      },
+      "theme": {
+        "enum": [
+          "plain",
+          "paper",
+          "dark"
+        ],
+        "default": "paper"
+      },
+      "inlineImages": {
+        "type": "boolean",
+        "default": true,
+        "description": "把工作区内的 png/jpg/gif/webp 图片 base64 内联成单文件"
+      },
+      "overwrite": {
+        "type": "boolean",
+        "default": false
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "outPath",
+      "bytes",
+      "inlinedImages"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "outPath": {
+        "type": "string"
+      },
+      "bytes": {
+        "type": "integer"
+      },
+      "inlinedImages": {
+        "type": "integer"
+      }
+    }
+  },
+  "permissions": [
+    "fs.write"
+  ],
+  "sideEffects": "write",
+  "idempotent": false,
+  "defaultTimeoutMs": 30000,
+  "async": false,
+  "schemaDigest": "sha256:5e50ef9a13e5d34b7996209aa056126ddf6e166e19e7ebe3b88326b3516159fc"
+}

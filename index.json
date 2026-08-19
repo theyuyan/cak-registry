@@ -846,6 +846,461 @@
       "setup": "建 ~/.cak/mail.json（accounts.<别名>.imap/smtp 的 host/port/secure/user/passFile + from），密码写进 ~/.cak/secrets/ 文件；Gmail 用应用专用密码，QQ/163 用授权码。",
       "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/email",
       "tier": "T1"
+    },
+    {
+      "id": "ssh-exec",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "经本机 ssh 在远程主机上执行命令、拉取文件、列出可连主机（ssh.exec / ssh.fetch / ssh.hosts）。主机用 ~/.cak/ssh.json 里的别名，只走密钥（BatchMode 永不弹密码），远程命令由 argv 数组安全拼接，超时杀进程组。给运维 agent 查状态、看日志、重启服务、取配置用。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/ssh-exec"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "ssh.hosts",
+          "version": "1.0.0",
+          "sampleArgs": {}
+        },
+        {
+          "name": "ssh.exec",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "host": "example",
+            "argv": [
+              "uptime"
+            ]
+          }
+        },
+        {
+          "name": "ssh.fetch",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "host": "example",
+            "remotePath": "/etc/hostname",
+            "localPath": "hostname.txt"
+          }
+        }
+      ],
+      "keywords": [
+        "ssh",
+        "远程执行",
+        "远程命令",
+        "服务器",
+        "运维",
+        "拉文件",
+        "scp",
+        "取日志",
+        "remote exec",
+        "remote shell",
+        "fetch file",
+        "ops",
+        "sysadmin",
+        "linux"
+      ],
+      "setup": "本机要有 OpenSSH 客户端且已 ssh-copy-id 到目标机；写 ~/.cak/ssh.json：{\"allowRawHosts\":false,\"hosts\":{\"web1\":{\"target\":\"deploy@10.0.0.5\",\"identityFile\":\"~/.ssh/id_ed25519\",\"allowSudo\":false}}}（SSH_CONFIG 可改路径）。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/ssh-exec",
+      "tier": "T1"
+    },
+    {
+      "id": "webhook",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "本机 HTTP webhook：让 CI / Git 平台 / 监控 / Zapier、n8n / 脚本 / 手机快捷指令用一个 POST 把 agent 叫醒——按 prompt 模板（{{body}} / {{json.a.b}} / {{header.x}} / {{query.k}}）渲染请求后作为一句用户输入投递给 agent 会话；默认只监听 127.0.0.1，token 在 URL 里只给一次；只是叫醒不是后台执行，内核不在时回 503。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/webhook"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "webhook.list",
+          "version": "1.0.0",
+          "sampleArgs": {}
+        },
+        {
+          "name": "webhook.create",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "name": "conformance-test",
+            "prompt": "收到：{{body}}"
+          }
+        },
+        {
+          "name": "webhook.delete",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "name": "nonexistent"
+          }
+        }
+      ],
+      "keywords": [
+        "webhook",
+        "回调",
+        "HTTP",
+        "POST",
+        "叫醒",
+        "触发",
+        "事件",
+        "CI",
+        "告警",
+        "监控",
+        "快捷指令",
+        "n8n",
+        "zapier",
+        "trigger",
+        "callback",
+        "event",
+        "wake"
+      ],
+      "setup": "无需配置；数据存 ~/.cak/webhook/hooks.json（WEBHOOK_DIR 可改），端口首次随机 40000-49999 或 WEBHOOK_PORT；默认只监听 127.0.0.1（WEBHOOK_BIND=0.0.0.0 才对外，要放反代/防火墙后）。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/webhook",
+      "tier": "T1"
+    },
+    {
+      "id": "docker",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "看容器、读日志、在容器里跑命令、起停容器：docker.ps 列容器（状态/镜像/端口，可按 status=exited 等过滤）、docker.logs 读日志尾部（tail/since/grep）、docker.exec 在容器内执行命令（argv 不经 shell，需审批）、docker.control 启动/停止/重启（需审批）。走本机 docker CLI，不删容器/镜像。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/docker"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "docker.ps",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "limit": 5
+          }
+        },
+        {
+          "name": "docker.logs",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "container": "nonexistent",
+            "tail": 10
+          }
+        },
+        {
+          "name": "docker.exec",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "container": "nonexistent",
+            "argv": [
+              "true"
+            ]
+          }
+        },
+        {
+          "name": "docker.control",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "container": "nonexistent",
+            "action": "start"
+          }
+        }
+      ],
+      "keywords": [
+        "docker",
+        "容器",
+        "容器日志",
+        "docker ps",
+        "docker logs",
+        "docker exec",
+        "重启容器",
+        "起停容器",
+        "container",
+        "logs",
+        "exec",
+        "restart",
+        "运维",
+        "compose"
+      ],
+      "setup": "本机要装 docker CLI 且 daemon 可连（DOCKER_HOST/DOCKER_CONTEXT 由环境决定）；可选 ~/.cak/docker.json 写 {\"allowContainers\":[\"web-*\"],\"denyExec\":true} 限制可操作的容器/禁用 exec。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/docker",
+      "tier": "T1"
+    },
+    {
+      "id": "desktop",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "桌面交互：弹系统通知（长任务跑完提醒）、用默认程序打开工作区内文件或 http(s) 网址、读/写系统剪贴板。macOS / Linux / Windows 都走系统自带命令，零依赖、无需配置。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/desktop"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "desktop.notify",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "title": "cak",
+            "message": "conformance"
+          }
+        },
+        {
+          "name": "desktop.open",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "target": "ftp://example.com/not-allowed"
+          }
+        },
+        {
+          "name": "desktop.clipboard.read",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "maxChars": 100
+          }
+        },
+        {
+          "name": "desktop.clipboard.write",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "text": "cak conformance"
+          }
+        }
+      ],
+      "keywords": [
+        "桌面",
+        "通知",
+        "系统通知",
+        "弹通知",
+        "提醒我",
+        "打开文件",
+        "打开网址",
+        "默认程序打开",
+        "剪贴板",
+        "复制到剪贴板",
+        "读剪贴板",
+        "desktop",
+        "notification",
+        "notify",
+        "toast",
+        "open file",
+        "open url",
+        "clipboard",
+        "copy",
+        "paste",
+        "pbcopy",
+        "xdg-open"
+      ],
+      "setup": "无需配置。Linux 需要 libnotify-bin（notify-send）、xdg-utils、xclip 或 wl-clipboard；macOS / Windows 自带。安装时的一致性测试对 desktop.open 用一个会被拒绝的 ftp:// 目标（不会真开浏览器）；desktop.clipboard.write 的样例会覆盖剪贴板一次。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/desktop",
+      "tier": "T1"
+    },
+    {
+      "id": "open-sources",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "免 key 的公开信息源：读 RSS/Atom/JSON Feed 订阅源、取 Hacker News 榜单、搜维基百科、搜 arXiv 论文——让 agent 追热点、查资料、订阅更新；全部只读免审批，只需能出网。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/open-sources"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "feed.read",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "url": "https://hnrss.org/frontpage",
+            "limit": 3
+          },
+          "badArgs": {
+            "url": "http://127.0.0.1:1/feed.xml"
+          }
+        },
+        {
+          "name": "hn.top",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "limit": 3
+          }
+        },
+        {
+          "name": "wiki.search",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "q": "Hacker News",
+            "lang": "en",
+            "limit": 1
+          }
+        },
+        {
+          "name": "arxiv.search",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "q": "all:agent",
+            "limit": 2
+          }
+        }
+      ],
+      "keywords": [
+        "RSS",
+        "Atom",
+        "JSON Feed",
+        "订阅",
+        "订阅源",
+        "博客更新",
+        "热点",
+        "新闻",
+        "Hacker News",
+        "HN",
+        "维基百科",
+        "百科",
+        "wikipedia",
+        "arXiv",
+        "论文",
+        "文献",
+        "paper",
+        "feed",
+        "news",
+        "trending",
+        "research"
+      ],
+      "setup": "无需配置、无需任何 key；只要能出网（维基/arXiv/HN 在部分网络环境可能不可达）。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/open-sources",
+      "tier": "T1"
+    },
+    {
+      "id": "doc-write",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "产出办公文件（只写工作区内，已存在默认不覆盖）：Markdown 子集→Word .docx（标题/列表/表格/代码/引用/分页/图片，微软雅黑）、二维表→Excel .xlsx（表头加粗、冻结首行、自动列宽）、GFM Markdown→自包含单文件 HTML（三套主题、图片内联、白名单清洗）。写周报/导出表格/生成可分享的报告页用它。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/doc-write"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "doc.write.docx",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "outPath": "_conformance/sample.docx",
+            "markdown": "# 标题\n\n正文 **粗体**\n\n| a | b |\n|---|---|\n| 1 | 2 |",
+            "overwrite": true
+          }
+        },
+        {
+          "name": "doc.write.xlsx",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "outPath": "_conformance/sample.xlsx",
+            "sheets": [
+              {
+                "name": "S1",
+                "columns": [
+                  "a",
+                  "b"
+                ],
+                "rows": [
+                  [
+                    1,
+                    "x"
+                  ]
+                ]
+              }
+            ],
+            "overwrite": true
+          }
+        },
+        {
+          "name": "doc.write.html",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "outPath": "_conformance/sample.html",
+            "markdown": "# 标题\n\n正文",
+            "overwrite": true
+          }
+        }
+      ],
+      "keywords": [
+        "写文档",
+        "生成文档",
+        "Word",
+        "docx",
+        "周报",
+        "报告",
+        "导出",
+        "Excel",
+        "xlsx",
+        "表格",
+        "HTML",
+        "网页报告",
+        "Markdown 转 Word",
+        "Markdown 转 HTML",
+        "办公文件",
+        "write document",
+        "generate docx",
+        "export xlsx",
+        "spreadsheet",
+        "markdown to word",
+        "markdown to html",
+        "report",
+        "office"
+      ],
+      "setup": "无需配置。宿主传 CAK_WORKSPACE 时只写该目录内；没传以进程 cwd 为根。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/doc-write",
+      "tier": "T1"
     }
   ],
   "agents": []

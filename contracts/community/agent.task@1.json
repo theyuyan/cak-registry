@@ -1,0 +1,44 @@
+{
+  "name": "agent.task",
+  "version": "1.0.0",
+  "description": "把一件独立子任务委派给另一个 agent（同一内核进程里的兄弟 agent，经 agent.invoke(target, contract=agent.task) 到达）：intent 说要做什么，context 给必要材料；对方在自己的授权/审批链里干完，回 report。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "intent"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "intent": {
+        "type": "string",
+        "minLength": 1,
+        "description": "要对方做什么，一句话"
+      },
+      "context": {
+        "type": "string",
+        "description": "必要的材料、路径、约束"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "report"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "report": {
+        "type": "string",
+        "description": "对方的最终回报（原文）"
+      }
+    }
+  },
+  "permissions": [
+    "agent.invoke"
+  ],
+  "sideEffects": "external",
+  "idempotent": false,
+  "defaultTimeoutMs": 600000,
+  "async": true,
+  "schemaDigest": "sha256:7e3d581eae8b6e7585ea7198d3b42cdfb9ac0a0c5c2d18c841f7244a80331c79"
+}

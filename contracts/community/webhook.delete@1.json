@@ -1,0 +1,41 @@
+{
+  "name": "webhook.delete",
+  "version": "1.0.0",
+  "description": "删除一个 webhook（按 name），旧 url 立即失效；不存在返回 deleted:false。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "name"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 32
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "name",
+      "deleted"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "deleted": {
+        "type": "boolean"
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "write",
+  "idempotent": false,
+  "defaultTimeoutMs": 5000,
+  "async": false,
+  "schemaDigest": "sha256:45c94af28a969dfe5e413494cf810f39909a48c1079eb6bc7b2f329653105213"
+}

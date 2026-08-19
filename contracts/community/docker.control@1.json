@@ -1,0 +1,66 @@
+{
+  "name": "docker.control",
+  "version": "1.0.0",
+  "description": "启动 / 停止 / 重启一个容器（docker start|stop|restart）。stop/restart 的 timeoutSec 是给容器优雅退出的秒数（-t，默认 10）。返回 ok 与操作后的 state（docker inspect）。不提供删除容器/镜像/prune。副作用 write：默认需要审批。容器不存在 / docker 不可用 → CAPABILITY_ERROR。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "container",
+      "action"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "container": {
+        "type": "string",
+        "minLength": 1,
+        "description": "容器名或 ID"
+      },
+      "action": {
+        "enum": [
+          "start",
+          "stop",
+          "restart"
+        ]
+      },
+      "timeoutSec": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 3600,
+        "default": 10,
+        "description": "stop/restart 等待优雅退出的秒数（-t）；start 忽略"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "container",
+      "action",
+      "ok",
+      "state"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "container": {
+        "type": "string"
+      },
+      "action": {
+        "type": "string"
+      },
+      "ok": {
+        "type": "boolean",
+        "description": "docker 命令是否成功退出"
+      },
+      "state": {
+        "type": "string",
+        "description": "操作后 docker inspect 的 State.Status（running/exited/…），查不到为 unknown"
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "write",
+  "idempotent": false,
+  "defaultTimeoutMs": 120000,
+  "async": false,
+  "schemaDigest": "sha256:8bf6217e90b124c826603d8f0acda8c964255194e9f96082b61c38c27c1c977d"
+}

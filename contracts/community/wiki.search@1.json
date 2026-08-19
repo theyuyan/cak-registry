@@ -1,0 +1,90 @@
+{
+  "name": "wiki.search",
+  "version": "1.0.0",
+  "description": "搜维基百科（免 key）：按语言站（zh/en/ja…）全文搜索，返回条目标题、链接、摘要（REST summary，截断到 extractChars）与缩略图。适合查概念/人物/事件的权威简介。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "q"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "q": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 300
+      },
+      "lang": {
+        "type": "string",
+        "pattern": "^[a-z]{2,3}(-[a-z]{2,8})?$",
+        "default": "zh",
+        "description": "语言站子域：zh / en / ja / de…；zh-hans 等变体也可"
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 10,
+        "default": 3
+      },
+      "extractChars": {
+        "type": "integer",
+        "minimum": 50,
+        "maximum": 20000,
+        "default": 1500
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "q",
+      "lang",
+      "results"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "q": {
+        "type": "string"
+      },
+      "lang": {
+        "type": "string"
+      },
+      "results": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "title",
+            "url",
+            "extract"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "extract": {
+              "type": "string",
+              "description": "纯文本摘要，≤ extractChars"
+            },
+            "thumbnail": {
+              "type": "string",
+              "description": "缩略图地址（有才给）"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [
+    "net.fetch"
+  ],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 20000,
+  "async": false,
+  "schemaDigest": "sha256:172fdb6c1265400a8acbf342f7c2bde306d15cae7ee39cb18ed9cc9fcaeb493a"
+}

@@ -1,0 +1,69 @@
+{
+  "name": "ssh.fetch",
+  "version": "1.0.0",
+  "description": "把远程主机上的一个文件经 ssh 拉到本地工作区（相对 CAK_WORKSPACE 的 localPath，越界拒绝）。先 stat 大小，超过 maxBytes（默认 50MB）拒绝；传输中也按字节限流。host 用主机别名（见 ssh.hosts）。只走密钥，永不弹密码。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "host",
+      "remotePath",
+      "localPath"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "host": {
+        "type": "string",
+        "minLength": 1,
+        "description": "主机别名（ssh.hosts 列出的 alias）"
+      },
+      "remotePath": {
+        "type": "string",
+        "minLength": 1,
+        "description": "远程文件路径（绝对路径或相对登录用户家目录）"
+      },
+      "localPath": {
+        "type": "string",
+        "minLength": 1,
+        "description": "本地目标文件，相对 CAK_WORKSPACE；不得越界；父目录自动创建"
+      },
+      "maxBytes": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1073741824,
+        "default": 52428800
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "host",
+      "remotePath",
+      "localPath",
+      "bytes"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "host": {
+        "type": "string"
+      },
+      "remotePath": {
+        "type": "string"
+      },
+      "localPath": {
+        "type": "string"
+      },
+      "bytes": {
+        "type": "integer"
+      }
+    }
+  },
+  "permissions": [
+    "fs.write"
+  ],
+  "sideEffects": "read",
+  "idempotent": false,
+  "async": false,
+  "defaultTimeoutMs": 300000,
+  "schemaDigest": "sha256:48822b0a0a08ce7e1cc9a1db4faae4881934bd7965839f90f7f4254a2c6d87d0"
+}
