@@ -590,7 +590,8 @@
       ],
       "setup": "建 ~/.cak/calendar.json：{\"accounts\":{\"default\":{\"serverUrl\":\"https://caldav.example.com/\",\"username\":\"…\",\"passFile\":\"~/.cak/secrets/caldav-default.pass\"}}}，密码写进 passFile（iCloud/Fastmail 用 App 专用密码；只支持 Basic 认证，Google 官方端点需 OAuth 接不了）。",
       "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/calendar",
-      "tier": "T1"
+      "tier": "T1",
+      "sensitiveReads": true
     },
     {
       "id": "schedule",
@@ -846,7 +847,8 @@
       ],
       "setup": "建 ~/.cak/mail.json（accounts.<别名>.imap/smtp 的 host/port/secure/user/passFile + from），密码写进 ~/.cak/secrets/ 文件；Gmail 用应用专用密码，QQ/163 用授权码。",
       "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/email",
-      "tier": "T1"
+      "tier": "T1",
+      "sensitiveReads": true
     },
     {
       "id": "ssh-exec",
@@ -911,7 +913,8 @@
       ],
       "setup": "本机要有 OpenSSH 客户端且已 ssh-copy-id 到目标机；写 ~/.cak/ssh.json：{\"allowRawHosts\":false,\"hosts\":{\"web1\":{\"target\":\"deploy@10.0.0.5\",\"identityFile\":\"~/.ssh/id_ed25519\",\"allowSudo\":false}}}（SSH_CONFIG 可改路径）。",
       "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/ssh-exec",
-      "tier": "T1"
+      "tier": "T1",
+      "sensitiveReads": true
     },
     {
       "id": "webhook",
@@ -1049,13 +1052,14 @@
       ],
       "setup": "本机要装 docker CLI 且 daemon 可连（DOCKER_HOST/DOCKER_CONTEXT 由环境决定）；可选 ~/.cak/docker.json 写 {\"allowContainers\":[\"web-*\"],\"denyExec\":true} 限制可操作的容器/禁用 exec。",
       "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/docker",
-      "tier": "T1"
+      "tier": "T1",
+      "sensitiveReads": true
     },
     {
       "id": "desktop",
       "version": "0.1.0",
       "kernelCompat": "^0.3.0",
-      "description": "桌面交互：弹系统通知（长任务跑完提醒）、用默认程序打开工作区内文件或 http(s) 网址、读/写系统剪贴板。macOS / Linux / Windows 都走系统自带命令，零依赖、无需配置。",
+      "description": "桌面交互（在用户屏幕上，用户能看见）：弹系统通知（长任务跑完提醒）、用系统默认程序打开工作区内文件或 http(s) 网址（用户说\"打开给我看\"就用它，不是无头的 browser.open）、读/写系统剪贴板。macOS / Linux / Windows 都走系统自带命令，零依赖、无需配置。",
       "license": "Apache-2.0",
       "install": {
         "type": "git",
@@ -1127,7 +1131,8 @@
       ],
       "setup": "无需配置。Linux 需要 libnotify-bin（notify-send）、xdg-utils、xclip 或 wl-clipboard；macOS / Windows 自带。安装时的一致性测试对 desktop.open 用一个会被拒绝的 ftp:// 目标（不会真开浏览器）；desktop.clipboard.write 的样例会覆盖剪贴板一次。",
       "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/desktop",
-      "tier": "T1"
+      "tier": "T1",
+      "sensitiveReads": true
     },
     {
       "id": "open-sources",
