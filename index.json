@@ -1,0 +1,528 @@
+{
+  "version": 1,
+  "plugins": [
+    {
+      "id": "http-fetch",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "上网抓网页：GET/HEAD 一个网址，HTML 自动转成纯文本，限大小；拒绝内网/回环地址；要限制只能访问哪些站点用句柄 caveat。",
+      "license": "Apache-2.0",
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "http.fetch",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "url": "https://example.com/"
+          },
+          "badArgs": {
+            "url": "http://127.0.0.1:1/"
+          }
+        }
+      ],
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/http-fetch",
+      "tier": "T1",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/http-fetch"
+      },
+      "setup": "无需配置。默认拒绝内网/回环地址；如需限制只能访问某些站点，用审批时的 s（本会话始终允许该站点）。",
+      "keywords": [
+        "网页",
+        "抓取",
+        "抓网页",
+        "上网",
+        "网址",
+        "url",
+        "http",
+        "fetch",
+        "web",
+        "crawl",
+        "下载页面",
+        "看网页"
+      ]
+    },
+    {
+      "id": "sql-query",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "查数据库（只读）：让 agent 能查 SQLite / Postgres 里的表和数据。连接别名在插件配置（~/.cak/sql-query.json），口令不经过模型；SQLite readOnly、Postgres READ ONLY、只允许单条 SELECT；限行限时。",
+      "license": "Apache-2.0",
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "sql.query",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "db": "demo",
+            "sql": "select 1 as one"
+          },
+          "badArgs": {
+            "db": "demo",
+            "sql": "delete from people"
+          }
+        }
+      ],
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/sql-query",
+      "tier": "T1",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/sql-query"
+      },
+      "setup": "安装后要告诉插件连哪个库：新建 ~/.cak/sql-query.json，内容形如 {\"connections\":{\"demo\":{\"driver\":\"sqlite\",\"file\":\"/绝对路径/xxx.sqlite\"}}}；Postgres 用 {\"driver\":\"postgres\",\"urlEnv\":\"PG_URL\"} 并在环境变量里放连接串（口令不要写进对话）。别名（如 demo）就是以后 sql.query 里 db 参数的值。",
+      "keywords": [
+        "数据库",
+        "查库",
+        "查询",
+        "database",
+        "db",
+        "sql",
+        "sqlite",
+        "postgres",
+        "postgresql",
+        "mysql",
+        "表",
+        "report",
+        "报表"
+      ]
+    },
+    {
+      "id": "memory-sqlite",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "长期记忆：agent 能记住跨会话的偏好和事实（memory.write），并按当前输入自动检索相关记忆（memory.search）。SQLite FTS5 全文，本地文件 ~/.cak/memory.sqlite。",
+      "license": "Apache-2.0",
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "memory.search",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "query": "kernel",
+            "limit": 5
+          }
+        },
+        {
+          "name": "memory.write",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "content": "conformance probe"
+          }
+        }
+      ],
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/memory-sqlite",
+      "tier": "T1",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/memory-sqlite"
+      },
+      "setup": "无需配置。记忆文件默认在 ~/.cak/memory.sqlite；装上后 cak-code 会自动把相关记忆带进上下文。",
+      "keywords": [
+        "记忆",
+        "记住",
+        "长期记忆",
+        "memory",
+        "remember",
+        "recall",
+        "笔记",
+        "偏好"
+      ]
+    },
+    {
+      "id": "py-summarize",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "文本摘要（Python 写的示例插件，text.summarize@1）：证明任何语言按 cak/1 协议都能接入；抽取前几句。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak.git",
+        "ref": "main",
+        "subdir": "sdk-python",
+        "build": []
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "python3",
+        "args": [
+          "examples/summarize_plugin.py"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "text.summarize",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "text": "CAK 是内核。它有插件。它让 agent 互联。"
+          }
+        }
+      ],
+      "keywords": [
+        "摘要",
+        "总结",
+        "summarize",
+        "summary",
+        "python",
+        "文本"
+      ],
+      "setup": "无需配置；需要本机有 python3（3.9+）。",
+      "source": "https://github.com/theyuyan/cak/tree/main/sdk-python",
+      "tier": "T1"
+    },
+    {
+      "id": "doc-read",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "读文档：让 agent 能读 PDF、Word(.docx)、Excel(.xlsx)、CSV 里的文字和表格（表格给 markdown + 结构化）。只读，只在工作区内。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/doc-read"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "doc.read",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "path": "fixtures/sample.csv"
+          },
+          "badArgs": {
+            "path": "../../etc/passwd"
+          }
+        }
+      ],
+      "keywords": [
+        "pdf",
+        "word",
+        "docx",
+        "excel",
+        "xlsx",
+        "csv",
+        "文档",
+        "读文档",
+        "表格",
+        "读pdf",
+        "读excel",
+        "读word",
+        "文件内容"
+      ],
+      "setup": "无需配置。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/doc-read",
+      "tier": "T1"
+    },
+    {
+      "id": "web-search",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "上网搜索：Brave / Tavily / 自建 SearXNG 三选一，返回标题、网址、摘要。需要你有一个搜索 API key（放文件，不经模型）。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/web-search"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "web.search",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "query": "cak"
+          }
+        }
+      ],
+      "keywords": [
+        "搜索",
+        "上网搜",
+        "查资料",
+        "google",
+        "search",
+        "brave",
+        "tavily",
+        "searxng",
+        "网络搜索"
+      ],
+      "setup": "需要配置：新建 ~/.cak/web-search.json，三选一：{\"engine\":\"brave\",\"keyFile\":\"~/.cak/secrets/brave.key\"}（Brave Search API，有免费额度）/ {\"engine\":\"tavily\",\"keyFile\":\"~/.cak/secrets/tavily.key\"} / {\"engine\":\"searxng\",\"url\":\"http://你的searxng:8080\"}。key 请自己写进 ~/.cak/secrets/ 下的文件（chmod 600），不要贴到对话里。注意：此插件作者未用真 key 联网测过。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/web-search",
+      "tier": "T1"
+    },
+    {
+      "id": "browser",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "真浏览器：让 agent 打开网页、看正文和可点的元素、输入、点击、翻页、截图（Playwright/Chromium）。装的时候会下载 Chromium（约 150MB）。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/browser"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "browser.open",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "url": "https://example.com/"
+          },
+          "badArgs": {
+            "url": "http://127.0.0.1:1/"
+          }
+        },
+        {
+          "name": "browser.snapshot",
+          "version": "1.0.0",
+          "sampleArgs": {}
+        },
+        {
+          "name": "browser.act",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "action": "scroll",
+            "deltaY": 100
+          }
+        }
+      ],
+      "keywords": [
+        "浏览器",
+        "打开网页",
+        "网页操作",
+        "点击",
+        "登录",
+        "表单",
+        "截图",
+        "browser",
+        "playwright",
+        "chrome",
+        "automation",
+        "自动化"
+      ],
+      "setup": "无需配置；首次安装会下载 Chromium。默认拒绝访问内网地址。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/browser",
+      "tier": "T1"
+    },
+    {
+      "id": "github",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "GitHub：让 agent 查仓库、issue、PR、搜索代码（只读、免审批），以及建 issue / 加评论（要审批）。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/github"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "github.query",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "path": "/rate_limit"
+          }
+        },
+        {
+          "name": "github.issue.create",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "repo": "o/r",
+            "body": "x"
+          }
+        }
+      ],
+      "keywords": [
+        "github",
+        "仓库",
+        "issue",
+        "pr",
+        "pull request",
+        "代码托管",
+        "提issue"
+      ],
+      "setup": "令牌三选一（不要贴到对话里）：环境变量 GITHUB_TOKEN；或写到 ~/.cak/secrets/github.token（chmod 600）；或本机 `gh auth login` 过。没有令牌只能读公开仓库（每小时 60 次）。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/github",
+      "tier": "T1"
+    },
+    {
+      "id": "pkg-info",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "查软件包最新版本和文档（npm / PyPI 官方源）：版本号、发布日期、README、仓库地址。写代码前先确认当前版本，别用过时 API。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/pkg-info"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "pkg.info",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "ecosystem": "npm",
+            "name": "canonicalize",
+            "readmeChars": 200
+          }
+        }
+      ],
+      "keywords": [
+        "npm",
+        "pypi",
+        "版本",
+        "最新版本",
+        "文档",
+        "readme",
+        "依赖",
+        "package",
+        "库"
+      ],
+      "setup": "无需配置。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/pkg-info",
+      "tier": "T1"
+    },
+    {
+      "id": "notify",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "发通知到 Slack / 企业微信群 / 钉钉 / 任意 webhook（渠道别名制）。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/notify"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "notify.send",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "channel": "ops",
+            "text": "hi"
+          }
+        }
+      ],
+      "keywords": [
+        "通知",
+        "slack",
+        "企业微信",
+        "企微",
+        "钉钉",
+        "webhook",
+        "群消息",
+        "提醒"
+      ],
+      "setup": "需要配置：~/.cak/notify.json，形如 {\"channels\":{\"ops\":{\"kind\":\"wecom\",\"urlFile\":\"~/.cak/secrets/wecom-ops.url\"}}}；kind 可选 slack / wecom / dingtalk / generic；webhook 地址写进 ~/.cak/secrets/ 下文件，不要贴到对话里。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/notify",
+      "tier": "T1"
+    },
+    {
+      "id": "front-plain",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "极简日志流界面（前端插件）：一件事一行、审批答 y/n/s；不含内核，只连 daemon 控制面。适合远程终端或想把输出重定向到文件的人。",
+      "license": "Apache-2.0",
+      "roles": [
+        "frontend"
+      ],
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/front-plain",
+        "build": []
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "main.mjs"
+        ]
+      },
+      "contracts": [],
+      "keywords": [
+        "界面",
+        "前端",
+        "ui",
+        "tui",
+        "frontend",
+        "日志",
+        "极简",
+        "换界面"
+      ],
+      "setup": "无需配置。先起 daemon（apps/cak-code/daemon.ts），再 cak front front-plain --session NAME；cak front --default front-plain 设为默认。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/front-plain",
+      "tier": "T1"
+    }
+  ],
+  "agents": []
+}
