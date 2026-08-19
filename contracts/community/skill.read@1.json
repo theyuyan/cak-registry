@@ -1,0 +1,77 @@
+{
+  "name": "skill.read",
+  "version": "1.0.0",
+  "description": "读一份技能的全文（默认 SKILL.md）或它的附件（file 相对技能目录）。读完按里面的流程做；每次读取都进账本，可审计「按哪份流程干的」。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "name"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1
+      },
+      "file": {
+        "type": "string",
+        "description": "技能目录内的相对路径，默认 SKILL.md"
+      },
+      "maxChars": {
+        "type": "integer",
+        "minimum": 200,
+        "maximum": 200000,
+        "default": 40000
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "name",
+      "file",
+      "text",
+      "truncated",
+      "files"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "file": {
+        "type": "string"
+      },
+      "text": {
+        "type": "string"
+      },
+      "truncated": {
+        "type": "boolean"
+      },
+      "files": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "技能目录里的其他文件（相对路径，≤100 个）"
+      },
+      "requires": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "source": {
+        "type": "string"
+      }
+    }
+  },
+  "permissions": [
+    "fs.read"
+  ],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 5000,
+  "async": false,
+  "schemaDigest": "sha256:e0fa6a1f2acf3fb79f0c42afcc7a92a2f606afaefb533e5c132965bf4301a817"
+}

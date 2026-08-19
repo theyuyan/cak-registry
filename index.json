@@ -1301,6 +1301,161 @@
       "setup": "无需配置。宿主传 CAK_WORKSPACE 时只写该目录内；没传以进程 cwd 为根。",
       "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/doc-write",
       "tier": "T1"
+    },
+    {
+      "id": "skills",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "技能库：让 agent 能看到并按需读取已装的技能（skill）——技能是给模型看的流程说明书（SKILL.md + 附件），不是新能力。装上后已装技能清单每轮自动进上下文，对得上的先 skill.read 再动手；读取进账本可审计。装 skill 角色的注册表条目、或手放 ~/.cak/skills/<name>/SKILL.md 都会被发现。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/skills",
+        "build": []
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "skill.list",
+          "version": "1.0.0",
+          "sampleArgs": {}
+        },
+        {
+          "name": "skill.read",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "name": "nonexistent"
+          }
+        }
+      ],
+      "keywords": [
+        "技能",
+        "skill",
+        "skills",
+        "流程",
+        "说明书",
+        "SOP",
+        "方法论",
+        "playbook",
+        "procedure",
+        "how to",
+        "按流程"
+      ],
+      "setup": "无需配置。技能来源：~/.cak/skills/<name>/SKILL.md（CAK_SKILLS_DIR 可改）、<工作区>/.cak/skills/、cak add 装的 skill 角色条目。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/skills",
+      "tier": "T1"
+    },
+    {
+      "id": "skill-cak-plugin-author",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "技能：写一个 CAK 能力插件的完整流程与硬规则（契约设计→目录→digest→验收→注册表条目）。用户要\"写插件 / 给 agent 加新能力\"时读它。需要装 skills 插件才能被看到。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "skills/cak-plugin-author",
+        "build": []
+      },
+      "entrypoint": {
+        "type": "none"
+      },
+      "contracts": [],
+      "keywords": [
+        "技能",
+        "skill",
+        "写插件",
+        "CAK 插件",
+        "开发插件",
+        "契约",
+        "plugin author",
+        "conformance"
+      ],
+      "setup": "需要先装 skills 插件；本条目只有 SKILL.md，不含代码。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/skills/cak-plugin-author",
+      "tier": "T0",
+      "roles": [
+        "skill"
+      ]
+    },
+    {
+      "id": "skill-weekly-report",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "技能：从 git 提交归纳周报（收集事实→归类→三段结构→数字要真→确认后出 docx）。用户要\"写周报 / 本周总结\"时读它。需要装 skills 插件才能被看到；建议同时装 doc-write。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "skills/weekly-report",
+        "build": []
+      },
+      "entrypoint": {
+        "type": "none"
+      },
+      "contracts": [],
+      "keywords": [
+        "技能",
+        "skill",
+        "周报",
+        "本周总结",
+        "汇报",
+        "weekly report",
+        "summary"
+      ],
+      "setup": "需要先装 skills 插件；配合 git.log（内置）与 doc-write 插件。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/skills/weekly-report",
+      "tier": "T0",
+      "roles": [
+        "skill"
+      ]
+    },
+    {
+      "id": "skill-incident-triage",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "技能：故障排查方法（先定发病时间与范围→换第二个靶子对照→进程在≠服务活→一次只改一个变量→判据不取自被测对象）。用户报\"坏了 / 慢了 / 时好时坏\"时读它。需要装 skills 插件才能被看到。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "skills/incident-triage",
+        "build": []
+      },
+      "entrypoint": {
+        "type": "none"
+      },
+      "contracts": [],
+      "keywords": [
+        "技能",
+        "skill",
+        "排障",
+        "故障",
+        "事故",
+        "慢",
+        "不通",
+        "troubleshoot",
+        "incident",
+        "triage",
+        "debug"
+      ],
+      "setup": "需要先装 skills 插件；配合 shell.exec / ssh-exec / docker 等运维能力。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/skills/incident-triage",
+      "tier": "T0",
+      "roles": [
+        "skill"
+      ]
     }
   ],
   "agents": []

@@ -1,0 +1,71 @@
+{
+  "name": "skill.list",
+  "version": "1.0.0",
+  "description": "列出本机已装的技能（skill）：每个技能一个名字 + 一句「何时用」。技能 = 给模型看的流程说明书（SKILL.md + 附件），不是新能力。通常作为上下文源每轮自动注入；对得上就 skill.read 读全文再动手。",
+  "inputSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "可选：只列名字/描述含此关键词的技能"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "skills",
+      "summary"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "skills": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "name",
+            "description",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string",
+              "description": "user | workspace | plugin:<id>"
+            },
+            "requires": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "该技能希望 agent 具备的契约名"
+            },
+            "files": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "summary": {
+        "type": "string",
+        "description": "给模型看的一段清单文本"
+      }
+    }
+  },
+  "permissions": [
+    "fs.read"
+  ],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 5000,
+  "async": false,
+  "schemaDigest": "sha256:b22f0931996ed3b2135b441c1cec057c4b0a40a6bf0d2e6d60b92d36c23f743b"
+}
