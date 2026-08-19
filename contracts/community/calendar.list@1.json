@@ -1,0 +1,65 @@
+{
+  "name": "calendar.list",
+  "version": "1.0.0",
+  "description": "列出 CalDAV 账号下的日历（iCloud / Nextcloud / Fastmail / Radicale 等）：id（集合路径，稳定）、名称、颜色、是否只读。只读，免审批。",
+  "inputSchema": {
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+      "account": {
+        "type": "string",
+        "minLength": 1,
+        "default": "default",
+        "description": "~/.cak/calendar.json 里的账号别名"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "account",
+      "calendars"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "account": {
+        "type": "string"
+      },
+      "calendars": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "name",
+            "readOnly"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string"
+            },
+            "readOnly": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [
+    "net.fetch"
+  ],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 30000,
+  "async": false,
+  "schemaDigest": "sha256:1ed5f4000da4f5a6755a0f58cc27a85d232b29aaaa42d9600bf68fe020dcea64"
+}

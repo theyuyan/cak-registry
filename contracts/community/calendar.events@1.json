@@ -1,0 +1,123 @@
+{
+  "name": "calendar.events",
+  "version": "1.0.0",
+  "description": "查日程：返回 [from,to) 窗口内的事件（重复事件已展开成各次实例，按开始时间升序）。from 缺省=今天 00:00 本地，to 缺省=from+7 天；calendar 可给 id 或名称，缺省=全部日历。全天事件 start/end 是日期，end 为独占（次日）。只读，免审批。",
+  "inputSchema": {
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+      "account": {
+        "type": "string",
+        "minLength": 1,
+        "default": "default",
+        "description": "~/.cak/calendar.json 里的账号别名"
+      },
+      "calendar": {
+        "type": "string",
+        "description": "日历 id 或名称；缺省=全部"
+      },
+      "from": {
+        "type": "string",
+        "description": "ISO 日期或日期时间，如 2026-01-01 或 2026-01-01T09:00:00；缺省=今天 00:00 本地"
+      },
+      "to": {
+        "type": "string",
+        "description": "ISO 日期或日期时间；缺省=from+7 天"
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 500,
+        "default": 100
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "account",
+      "from",
+      "to",
+      "events"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "account": {
+        "type": "string"
+      },
+      "from": {
+        "type": "string"
+      },
+      "to": {
+        "type": "string"
+      },
+      "events": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "uid",
+            "calendar",
+            "title",
+            "start",
+            "end",
+            "allDay",
+            "recurring"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "uid": {
+              "type": "string"
+            },
+            "calendar": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "start": {
+              "type": "string"
+            },
+            "end": {
+              "type": "string"
+            },
+            "allDay": {
+              "type": "boolean"
+            },
+            "location": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "organizer": {
+              "type": "string"
+            },
+            "attendees": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "status": {
+              "type": "string"
+            },
+            "recurring": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [
+    "net.fetch"
+  ],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 60000,
+  "async": false,
+  "schemaDigest": "sha256:6e5b75112829ef7accddec161c6128002ebc18faf5bf2f7df5091fc16d228597"
+}

@@ -1,0 +1,121 @@
+{
+  "name": "kb.ingest",
+  "version": "1.0.0",
+  "description": "把本地目录/文件切块建成全文索引（本地知识库，SQLite FTS5 + BM25，零外部依赖、不调 embedding）。按 (path,size,mtime) 增量：没变的文件跳过，变了的先删旧块再写。跳过 node_modules/.git/dist/隐藏目录与二进制。先 ingest 再 kb.query。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "paths"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "kb": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+        "default": "default",
+        "description": "知识库名（一个名字一个 sqlite 文件）"
+      },
+      "paths": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 200,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "要建索引的文件或目录（有 CAK_WORKSPACE 时只许工作区内）"
+      },
+      "include": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^\\.[A-Za-z0-9]+$"
+        },
+        "description": "目录递归时的扩展名白名单；显式点名的文件不受此限"
+      },
+      "maxFileBytes": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 50000000,
+        "default": 2000000
+      },
+      "chunkChars": {
+        "type": "integer",
+        "minimum": 200,
+        "maximum": 4000,
+        "default": 900
+      },
+      "overlapChars": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1000,
+        "default": 120
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "kb",
+      "files",
+      "indexed",
+      "skipped",
+      "chunks",
+      "totalChunks",
+      "errors"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "kb": {
+        "type": "string"
+      },
+      "files": {
+        "type": "integer",
+        "description": "扫到的可索引文本文件数"
+      },
+      "indexed": {
+        "type": "integer",
+        "description": "本次新建/更新的文件数"
+      },
+      "skipped": {
+        "type": "integer",
+        "description": "未变化跳过的文件数"
+      },
+      "chunks": {
+        "type": "integer",
+        "description": "本次写入的块数"
+      },
+      "totalChunks": {
+        "type": "integer",
+        "description": "库里总块数"
+      },
+      "errors": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "path",
+            "message"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [
+    "fs.read"
+  ],
+  "sideEffects": "write",
+  "idempotent": false,
+  "defaultTimeoutMs": 120000,
+  "async": false,
+  "schemaDigest": "sha256:a441be66237e615034ff1ecf208fc99a8616fea22c239daa68a8aa9ea9e9654d"
+}

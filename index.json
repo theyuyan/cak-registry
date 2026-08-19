@@ -522,6 +522,329 @@
       "setup": "无需配置。先起 daemon（apps/cak-code/daemon.ts），再 cak front front-plain --session NAME；cak front --default front-plain 设为默认。",
       "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/front-plain",
       "tier": "T1"
+    },
+    {
+      "id": "calendar",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "看日历、查日程、建日程（CalDAV：iCloud / Nextcloud / Fastmail / Radicale 等）：列日历、按时间窗口查事件（重复事件已展开）、新建一条日程（要审批）。账号走本地配置别名，密码不进模型。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/calendar"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "calendar.list",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "account": "default"
+          }
+        },
+        {
+          "name": "calendar.events",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "account": "default",
+            "from": "2026-01-01",
+            "to": "2026-01-07"
+          }
+        },
+        {
+          "name": "calendar.create",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "account": "default",
+            "calendar": "Work",
+            "title": "test",
+            "start": "2026-01-01T10:00:00"
+          }
+        }
+      ],
+      "keywords": [
+        "日历",
+        "日程",
+        "会议",
+        "提醒",
+        "行程",
+        "安排",
+        "calendar",
+        "caldav",
+        "event",
+        "schedule",
+        "meeting",
+        "icloud",
+        "nextcloud",
+        "fastmail",
+        "radicale"
+      ],
+      "setup": "建 ~/.cak/calendar.json：{\"accounts\":{\"default\":{\"serverUrl\":\"https://caldav.example.com/\",\"username\":\"…\",\"passFile\":\"~/.cak/secrets/caldav-default.pass\"}}}，密码写进 passFile（iCloud/Fastmail 用 App 专用密码；只支持 Basic 认证，Google 官方端点需 OAuth 接不了）。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/calendar",
+      "tier": "T1"
+    },
+    {
+      "id": "schedule",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "给 agent 定闹钟/定时任务：到点把一句话投递给某个 agent 会话把它叫醒接着干（一次性 / 每 N 分钟小时天 / cron）；只是叫醒不是后台执行，内核进程不在时不触发。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/schedule"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "schedule.list",
+          "version": "1.0.0",
+          "sampleArgs": {}
+        },
+        {
+          "name": "schedule.create",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "text": "conformance 测试",
+            "inMinutes": 600
+          }
+        },
+        {
+          "name": "schedule.cancel",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "id": "nonexistent"
+          }
+        }
+      ],
+      "keywords": [
+        "定时",
+        "定时任务",
+        "闹钟",
+        "提醒",
+        "稍后",
+        "每天",
+        "周期",
+        "cron",
+        "schedule",
+        "timer",
+        "reminder",
+        "alarm",
+        "wake"
+      ],
+      "setup": "无需配置；任务存 ~/.cak/schedule/jobs.json（SCHEDULE_DIR 可改）。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/schedule",
+      "tier": "T1"
+    },
+    {
+      "id": "test-run",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "跑测试并返回结构化结果：自动探测 vitest / jest / mocha / node --test / pytest / go / cargo / npm test（或指定 custom 命令），给出通过/失败/跳过计数、失败清单（名字+消息+文件）和输出尾部。改完代码一条调用拿到失败在哪，不用自己拼命令、啃长输出。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/test-run"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "test.run",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "framework": "custom",
+            "argv": [
+              "node",
+              "-e",
+              "console.log('ok')"
+            ],
+            "timeoutMs": 10000
+          }
+        }
+      ],
+      "keywords": [
+        "测试",
+        "跑测试",
+        "单元测试",
+        "test",
+        "run tests",
+        "vitest",
+        "jest",
+        "mocha",
+        "pytest",
+        "go test",
+        "cargo test",
+        "npm test",
+        "失败列表",
+        "TDD"
+      ],
+      "setup": "无需配置；被测项目自身的测试框架要能在本机运行（如 npx vitest / python3 -m pytest / go / cargo 在 PATH 里）。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/test-run",
+      "tier": "T1"
+    },
+    {
+      "id": "kb-local",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "本地知识库：把目录/文件切块建全文索引（SQLite FTS5 + BM25，零依赖离线、不调 embedding），再用关键词/短语/中文检索相关段落。先 kb.ingest 项目 docs 再 kb.query。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/kb-local"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "kb.ingest",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "paths": [
+              "README.md"
+            ]
+          }
+        },
+        {
+          "name": "kb.query",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "q": "hello",
+            "limit": 3
+          }
+        },
+        {
+          "name": "kb.list",
+          "version": "1.0.0",
+          "sampleArgs": {}
+        }
+      ],
+      "keywords": [
+        "知识库",
+        "本地知识库",
+        "全文检索",
+        "检索",
+        "搜索",
+        "文档",
+        "RAG",
+        "BM25",
+        "FTS5",
+        "索引",
+        "knowledge base",
+        "search",
+        "full-text",
+        "local rag",
+        "docs",
+        "index",
+        "sqlite"
+      ],
+      "setup": "无需配置。可选环境变量 KB_DIR 改存放目录（默认 ~/.cak/kb）。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/kb-local",
+      "tier": "T1"
+    },
+    {
+      "id": "email",
+      "version": "0.1.0",
+      "kernelCompat": "^0.3.0",
+      "description": "查邮件、读邮件、发邮件（IMAP/SMTP，账号别名制，凭据不经模型）：按关键词/日期/未读搜索邮件列表，读一封的正文纯文本与附件清单（不下载），发纯文本邮件或回复某封（可带工作区内附件；发信要审批）。",
+      "license": "Apache-2.0",
+      "install": {
+        "type": "git",
+        "url": "https://github.com/theyuyan/cak-plugins.git",
+        "ref": "main",
+        "subdir": "plugins/email"
+      },
+      "entrypoint": {
+        "type": "subprocess",
+        "command": "node",
+        "args": [
+          "dist/main.js"
+        ]
+      },
+      "contracts": [
+        {
+          "name": "mail.search",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "account": "default",
+            "limit": 5
+          }
+        },
+        {
+          "name": "mail.read",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "account": "default",
+            "uid": 1
+          }
+        },
+        {
+          "name": "mail.send",
+          "version": "1.0.0",
+          "sampleArgs": {
+            "account": "default",
+            "to": [
+              "someone@example.com"
+            ],
+            "subject": "test",
+            "text": "hi"
+          }
+        }
+      ],
+      "keywords": [
+        "邮件",
+        "邮箱",
+        "收件箱",
+        "查邮件",
+        "读邮件",
+        "发邮件",
+        "回复邮件",
+        "未读邮件",
+        "附件",
+        "email",
+        "mail",
+        "imap",
+        "smtp",
+        "inbox",
+        "send email",
+        "reply",
+        "gmail",
+        "outlook",
+        "qq邮箱",
+        "163邮箱"
+      ],
+      "setup": "建 ~/.cak/mail.json（accounts.<别名>.imap/smtp 的 host/port/secure/user/passFile + from），密码写进 ~/.cak/secrets/ 文件；Gmail 用应用专用密码，QQ/163 用授权码。",
+      "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/email",
+      "tier": "T1"
     }
   ],
   "agents": []

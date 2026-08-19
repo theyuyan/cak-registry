@@ -1,0 +1,84 @@
+{
+  "name": "schedule.list",
+  "version": "1.0.0",
+  "description": "列出定时任务（默认只看待触发的；includeDone=true 连已完成/取消/错过的一起看）。",
+  "inputSchema": {
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+      "includeDone": {
+        "type": "boolean",
+        "default": false
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "jobs"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "jobs": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "text",
+            "agent",
+            "createdAt",
+            "runs",
+            "status"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "agent": {
+              "type": "string"
+            },
+            "nextRunAt": {
+              "type": "string"
+            },
+            "every": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string"
+            },
+            "lastRunAt": {
+              "type": "string"
+            },
+            "runs": {
+              "type": "integer"
+            },
+            "status": {
+              "enum": [
+                "active",
+                "done",
+                "cancelled",
+                "missed",
+                "error"
+              ]
+            },
+            "lastError": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 5000,
+  "async": false,
+  "schemaDigest": "sha256:703d9ccc13a2684cc50ea432281804c05ec81446b215453cf0565e1e3b4bbc53"
+}

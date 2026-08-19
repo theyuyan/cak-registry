@@ -1,0 +1,110 @@
+{
+  "name": "mail.read",
+  "version": "1.0.0",
+  "description": "按账号别名 + 文件夹 + uid（来自 mail.search）通过 IMAP 读一封邮件的正文纯文本（HTML 自动转文本，可截断）与附件清单（只列文件名/类型/大小，不下载）。默认不改已读状态；markSeen=true 才标已读。只读、免审批。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "uid"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "account": {
+        "type": "string",
+        "minLength": 1,
+        "default": "default"
+      },
+      "folder": {
+        "type": "string",
+        "minLength": 1,
+        "default": "INBOX"
+      },
+      "uid": {
+        "type": "integer",
+        "minimum": 1,
+        "description": "mail.search 返回的 uid（按文件夹计）"
+      },
+      "maxChars": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 500000,
+        "default": 20000
+      },
+      "markSeen": {
+        "type": "boolean",
+        "default": false
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "uid",
+      "date",
+      "from",
+      "to",
+      "subject",
+      "text",
+      "truncated",
+      "attachments"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "uid": {
+        "type": "integer"
+      },
+      "date": {
+        "type": "string"
+      },
+      "from": {
+        "type": "string"
+      },
+      "to": {
+        "type": "string"
+      },
+      "cc": {
+        "type": "string"
+      },
+      "subject": {
+        "type": "string"
+      },
+      "text": {
+        "type": "string"
+      },
+      "truncated": {
+        "type": "boolean"
+      },
+      "attachments": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "filename",
+            "contentType",
+            "size"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "filename": {
+              "type": "string"
+            },
+            "contentType": {
+              "type": "string"
+            },
+            "size": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [
+    "net.fetch"
+  ],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 30000,
+  "async": false,
+  "schemaDigest": "sha256:872f19c46046ea52b8934cc04a251de5c783f798a66b792018c3cf49a83d5536"
+}

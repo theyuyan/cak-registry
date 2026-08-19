@@ -1,0 +1,135 @@
+{
+  "name": "test.run",
+  "version": "1.0.0",
+  "description": "在工作区内跑测试并返回结构化结果：自动探测框架（vitest/jest/mocha/node --test/pytest/go/cargo/npm test）或指定 custom argv，解析通过/失败/跳过计数与失败列表（名字+消息+文件），附输出尾部。改完代码后一条调用拿到失败清单，不用自己拼命令、啃长输出。副作用 external：默认需要审批。",
+  "inputSchema": {
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+      "cwd": {
+        "type": "string",
+        "description": "相对 CAK_WORKSPACE 的目录，缺省=工作区根；不得越界"
+      },
+      "framework": {
+        "enum": [
+          "auto",
+          "vitest",
+          "jest",
+          "mocha",
+          "node",
+          "pytest",
+          "go",
+          "cargo",
+          "npm",
+          "custom"
+        ],
+        "default": "auto"
+      },
+      "argv": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "string"
+        },
+        "description": "framework=custom 时必填：直接执行的命令 argv（不经 shell）"
+      },
+      "filter": {
+        "type": "string",
+        "description": "只跑匹配的测试文件/名字，按框架翻译成 -t / -k / -run / --grep 等"
+      },
+      "timeoutMs": {
+        "type": "integer",
+        "minimum": 1000,
+        "maximum": 1800000,
+        "default": 300000
+      },
+      "maxOutputChars": {
+        "type": "integer",
+        "minimum": 200,
+        "maximum": 200000,
+        "default": 12000
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "framework",
+      "command",
+      "exitCode",
+      "timedOut",
+      "durationMs",
+      "failures",
+      "outputTail",
+      "parsed"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "framework": {
+        "type": "string"
+      },
+      "command": {
+        "type": "string"
+      },
+      "exitCode": {
+        "type": "integer"
+      },
+      "timedOut": {
+        "type": "boolean"
+      },
+      "durationMs": {
+        "type": "integer"
+      },
+      "passed": {
+        "type": "integer"
+      },
+      "failed": {
+        "type": "integer"
+      },
+      "skipped": {
+        "type": "integer"
+      },
+      "failures": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "name",
+            "message"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "file": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "summaryLine": {
+        "type": "string"
+      },
+      "outputTail": {
+        "type": "string"
+      },
+      "parsed": {
+        "type": "boolean"
+      }
+    }
+  },
+  "permissions": [
+    "shell.exec"
+  ],
+  "sideEffects": "external",
+  "idempotent": false,
+  "defaultTimeoutMs": 600000,
+  "async": false,
+  "schemaDigest": "sha256:c727483720e6d023f9f3483da8bbdc9389f0973a78e5163671d28d70b22ec8ac"
+}

@@ -1,0 +1,96 @@
+{
+  "name": "mail.send",
+  "version": "1.0.0",
+  "description": "按账号别名通过 SMTP 发一封纯文本邮件（发件人取配置里的 from）。inReplyToUid 可回复某封（自动带 In-Reply-To/References 与 Re: 主题，原信按 folder+uid 从 IMAP 取）；attachPaths 只允许工作区内的文件。副作用 external：默认需要人审批。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "to",
+      "subject",
+      "text"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "account": {
+        "type": "string",
+        "minLength": 1,
+        "default": "default"
+      },
+      "to": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "string",
+          "minLength": 3
+        }
+      },
+      "cc": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 3
+        }
+      },
+      "subject": {
+        "type": "string"
+      },
+      "text": {
+        "type": "string",
+        "description": "纯文本正文"
+      },
+      "inReplyToUid": {
+        "type": "integer",
+        "minimum": 1,
+        "description": "回复哪封（mail.search 的 uid）"
+      },
+      "folder": {
+        "type": "string",
+        "minLength": 1,
+        "default": "INBOX",
+        "description": "inReplyToUid 所在文件夹"
+      },
+      "attachPaths": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "附件路径，只允许 CAK_WORKSPACE 内的文件"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "messageId",
+      "accepted",
+      "rejected"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "messageId": {
+        "type": "string"
+      },
+      "accepted": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "rejected": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "permissions": [
+    "net.fetch"
+  ],
+  "sideEffects": "external",
+  "idempotent": false,
+  "defaultTimeoutMs": 60000,
+  "async": false,
+  "schemaDigest": "sha256:14c1288b8462a3b1f8127c7d248c31271e327eebd17bb18a1ce1ffdf504fe8be"
+}

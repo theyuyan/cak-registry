@@ -1,0 +1,99 @@
+{
+  "name": "kb.query",
+  "version": "1.0.0",
+  "description": "在本地知识库里全文检索（BM25，不是向量检索：靠字面命中，同义词不召回）。中英文都行、大小写不敏感、支持子串；输入随便写，词之间是 OR，按相关度排。返回命中块全文 + 高亮片段。空库返回 hits:[]。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "q"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "kb": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+        "default": "default"
+      },
+      "q": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2000,
+        "description": "关键词/短语/自然语言"
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 50,
+        "default": 8
+      },
+      "pathPrefix": {
+        "type": "string",
+        "description": "只在这个目录/路径前缀下找"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "kb",
+      "q",
+      "hits",
+      "totalChunks"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "kb": {
+        "type": "string"
+      },
+      "q": {
+        "type": "string"
+      },
+      "hits": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "path",
+            "chunk",
+            "score",
+            "text",
+            "snippet"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "chunk": {
+              "type": "integer",
+              "description": "该文件内的块序号（从 0 起）"
+            },
+            "score": {
+              "type": "number",
+              "description": "相关度（越大越相关，= -bm25）"
+            },
+            "text": {
+              "type": "string",
+              "description": "该块全文"
+            },
+            "snippet": {
+              "type": "string",
+              "description": "命中高亮片段，命中词用 [ ] 包住"
+            }
+          }
+        }
+      },
+      "totalChunks": {
+        "type": "integer"
+      }
+    }
+  },
+  "permissions": [
+    "fs.read"
+  ],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 15000,
+  "async": false,
+  "schemaDigest": "sha256:e73aaa9bf2912d3db971aa20cb99433a96bd6db53cc086c1183f9a4cf783a37e"
+}

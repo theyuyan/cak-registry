@@ -1,0 +1,116 @@
+{
+  "name": "mail.search",
+  "version": "1.0.0",
+  "description": "按账号别名（配置在 ~/.cak/mail.json，凭据不经模型）通过 IMAP 搜索邮件：可按关键词（主题/发件人/正文）、起始日期、只看未读过滤，返回按日期倒序的邮件列表（uid、日期、发件人、收件人、主题、是否已读、有无附件、≤200 字摘要）。只读、免审批。要读全文用 mail.read。",
+  "inputSchema": {
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+      "account": {
+        "type": "string",
+        "minLength": 1,
+        "default": "default",
+        "description": "配置里的账号别名"
+      },
+      "folder": {
+        "type": "string",
+        "minLength": 1,
+        "default": "INBOX",
+        "description": "IMAP 文件夹，如 INBOX / Sent"
+      },
+      "query": {
+        "type": "string",
+        "description": "关键词：匹配主题、发件人或正文"
+      },
+      "since": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "description": "只看此日期（YYYY-MM-DD）之后收到的"
+      },
+      "unseenOnly": {
+        "type": "boolean",
+        "default": false
+      },
+      "limit": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 100,
+        "default": 20
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "account",
+      "folder",
+      "total",
+      "messages"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "account": {
+        "type": "string"
+      },
+      "folder": {
+        "type": "string"
+      },
+      "total": {
+        "type": "integer",
+        "description": "命中总数（可能大于返回条数）"
+      },
+      "messages": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "uid",
+            "date",
+            "from",
+            "to",
+            "subject",
+            "seen",
+            "hasAttachments",
+            "snippet"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "uid": {
+              "type": "integer"
+            },
+            "date": {
+              "type": "string"
+            },
+            "from": {
+              "type": "string"
+            },
+            "to": {
+              "type": "string"
+            },
+            "subject": {
+              "type": "string"
+            },
+            "seen": {
+              "type": "boolean"
+            },
+            "hasAttachments": {
+              "type": "boolean"
+            },
+            "snippet": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [
+    "net.fetch"
+  ],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 30000,
+  "async": false,
+  "schemaDigest": "sha256:56ba5bac01c5ab644de7e2ed97c8eb435f0d8e1fb9628d6791052bd62259ded8"
+}

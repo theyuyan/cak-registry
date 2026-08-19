@@ -1,0 +1,40 @@
+{
+  "name": "schedule.cancel",
+  "version": "1.0.0",
+  "description": "取消一个定时任务（按 schedule.list 里的 id）；不存在的 id 返回错误。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "id"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "id",
+      "status"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "write",
+  "idempotent": false,
+  "defaultTimeoutMs": 5000,
+  "async": false,
+  "schemaDigest": "sha256:e1e313ae28aff134e2a6bd3c73914104fe4b17d395ce7245a643cf8597d62dda"
+}

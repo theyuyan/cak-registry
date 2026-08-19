@@ -1,0 +1,63 @@
+{
+  "name": "kb.list",
+  "version": "1.0.0",
+  "description": "列出本地知识库（kb-local）：每个库的文件数、块数、字节数、最近更新时间。不传 kb 列全部。",
+  "inputSchema": {
+    "type": "object",
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+      "kb": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+        "description": "只看这一个库"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "kbs"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "kbs": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "kb",
+            "files",
+            "chunks",
+            "bytes",
+            "updatedAt"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kb": {
+              "type": "string"
+            },
+            "files": {
+              "type": "integer"
+            },
+            "chunks": {
+              "type": "integer"
+            },
+            "bytes": {
+              "type": "integer"
+            },
+            "updatedAt": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "read",
+  "idempotent": true,
+  "defaultTimeoutMs": 10000,
+  "async": false,
+  "schemaDigest": "sha256:3011cbc71b3a7b55af53f72bc978d541f2952ef10dd8e502d0c784d8434ecac3"
+}

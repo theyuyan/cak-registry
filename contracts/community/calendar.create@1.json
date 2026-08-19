@@ -1,0 +1,84 @@
+{
+  "name": "calendar.create",
+  "version": "1.0.0",
+  "description": "在指定日历新建一条日程（PUT 一个新 .ics，不改不删已有日程）。end 缺省=start+1 小时；allDay=true 时 start/end 给日期，end 独占、缺省=次日；reminderMinutes 生成提前提醒。写操作，默认审批。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "calendar",
+      "title",
+      "start"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "account": {
+        "type": "string",
+        "minLength": 1,
+        "default": "default",
+        "description": "~/.cak/calendar.json 里的账号别名"
+      },
+      "calendar": {
+        "type": "string",
+        "minLength": 1,
+        "description": "日历 id 或名称（先用 calendar.list 看）"
+      },
+      "title": {
+        "type": "string",
+        "minLength": 1
+      },
+      "start": {
+        "type": "string",
+        "minLength": 1,
+        "description": "ISO 日期时间（无时区按本机时区）；allDay 时可给日期"
+      },
+      "end": {
+        "type": "string",
+        "description": "ISO；缺省=start+1h（全天=次日）"
+      },
+      "allDay": {
+        "type": "boolean",
+        "default": false
+      },
+      "location": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "reminderMinutes": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 40320,
+        "description": "提前多少分钟提醒（VALARM）"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "uid",
+      "href",
+      "calendar"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "uid": {
+        "type": "string"
+      },
+      "href": {
+        "type": "string"
+      },
+      "calendar": {
+        "type": "string"
+      }
+    }
+  },
+  "permissions": [
+    "net.fetch"
+  ],
+  "sideEffects": "write",
+  "idempotent": false,
+  "defaultTimeoutMs": 30000,
+  "async": false,
+  "schemaDigest": "sha256:58df19fa18e506e8e29e9d55182e91f16b180fd0aa8146ff8eaa03a492065507"
+}

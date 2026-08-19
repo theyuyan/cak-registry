@@ -1,0 +1,76 @@
+{
+  "name": "schedule.create",
+  "version": "1.0.0",
+  "description": "给 agent 定闹钟/定时任务：到点时把 text 作为一句用户输入投递给某个 agent 会话（把它叫醒继续干），不是后台执行。at（ISO 时间）/ inMinutes / every（\"30m\"/\"2h\"/\"1d\" 或 5 段 cron）三选一，或 every+at/inMinutes = 首次时间+周期。内核进程不在时不会触发。",
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "text"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "text": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4000,
+        "description": "到点后投递给 agent 的那句话，如“检查 CI 是否绿了并汇报”"
+      },
+      "at": {
+        "type": "string",
+        "description": "首次触发时间，ISO 8601（如 2026-08-20T09:00:00+08:00）"
+      },
+      "inMinutes": {
+        "type": "number",
+        "exclusiveMinimum": 0,
+        "maximum": 525600,
+        "description": "多少分钟后触发"
+      },
+      "every": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 100,
+        "description": "重复间隔：\"30m\"/\"2h\"/\"1d\" 或 5 段 cron（分 时 日 月 周）"
+      },
+      "agent": {
+        "type": "string",
+        "minLength": 1,
+        "description": "目标 agent 名；缺省=所属内核的默认 agent"
+      },
+      "note": {
+        "type": "string",
+        "maxLength": 500,
+        "description": "备注（只存文件，便于人查看）"
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "id",
+      "nextRunAt",
+      "agent",
+      "repeat"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "nextRunAt": {
+        "type": "string"
+      },
+      "agent": {
+        "type": "string"
+      },
+      "repeat": {
+        "type": "boolean"
+      }
+    }
+  },
+  "permissions": [],
+  "sideEffects": "write",
+  "idempotent": false,
+  "defaultTimeoutMs": 15000,
+  "async": false,
+  "schemaDigest": "sha256:8ec32c8cd04681dab8af4edac1eba7d5ac836079abd8fd649da937e29cdb2b3e"
+}
