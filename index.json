@@ -1312,8 +1312,7 @@
         "type": "git",
         "url": "https://github.com/theyuyan/cak-plugins.git",
         "ref": "main",
-        "subdir": "plugins/skills",
-        "build": []
+        "subdir": "plugins/skills"
       },
       "entrypoint": {
         "type": "subprocess",
