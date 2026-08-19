@@ -1,0 +1,36 @@
+name: verify
+on:
+  push: { branches: [main] }
+  pull_request:
+  schedule: [{ cron: '17 3 * * *' }]   # 每天一次：上游插件仓库或外部 API 变了也能发现
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: node scripts/validate.mjs
+  install-all:
+    # trust-but-verify 的真实路径：像用户一样 cak add 每一个条目（clone → build → 本机 conformance）
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: kernel (source, main)
+        run: git clone --depth 1 https://github.com/theyuyan/cak.git /tmp/cak && cd /tmp/cak && npm ci
+      - name: cak add every entry
+        run: |
+          set +e
+          fail=0; mkdir -p /tmp/plugins
+          for id in $(node -e 'console.log(JSON.parse(require("fs").readFileSync("index.json","utf8")).plugins.map(p=>p.id).join(" "))'); do
+            printf '%-26s ' "$id"
+            out=$(cd /tmp/cak && timeout 900 npx tsx bin/cak.ts add "$id" --registry "$GITHUB_WORKSPACE" --install-dir /tmp/plugins 2>&1)
+            if echo "$out" | grep -q '✔ 已安装'; then echo "$out" | grep '✔ 已安装' | sed 's/  →.*//'; else echo "FAIL"; echo "$out" | tail -15; fail=1; fi
+          done
+          exit $fail
