@@ -1,7 +1,7 @@
 {
   "name": "desktop.open",
   "version": "1.0.0",
-  "description": "用系统默认程序打开一个文件或网址（macOS open / Linux xdg-open / Windows start）。target 只能是工作区内的文件路径（相对 CAK_WORKSPACE）或 http(s) 网址；file:/javascript: 等其他 scheme 一律拒绝。app 仅 macOS 有效（open -a 指定应用）。会在用户屏幕上弹出窗口，副作用 external：默认需要审批。设 DESKTOP_DRY_RUN=1 时只校验不真开（method=dry-run）。",
+  "description": "在用户屏幕上用系统默认程序打开工作区内文件或 http(s) 网址（用户能看见窗口：macOS open / Linux xdg-open / Windows start）——用户说\"打开给我看\"\"用浏览器打开\"就是它，不是 browser.open（那是 agent 自己用的无头浏览器，用户看不到）。target 只能是工作区内的文件路径（相对 CAK_WORKSPACE，符号链接按真实目标判，越界拒）或 http(s) 网址；file:/javascript: 等其他 scheme 一律拒绝。app 仅 macOS 有效（open -a 指定应用）。副作用 external：默认需要审批。设 DESKTOP_DRY_RUN=1 时只校验不真开（method=dry-run）。",
   "inputSchema": {
     "type": "object",
     "required": [

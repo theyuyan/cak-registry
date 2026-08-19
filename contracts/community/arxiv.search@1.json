@@ -1,7 +1,7 @@
 {
   "name": "arxiv.search",
   "version": "1.0.0",
-  "description": "搜 arXiv 论文（官方 API，免 key）：支持 arXiv 查询语法（如 all:agent AND cat:cs.AI、ti:\"large language model\"），返回 id、标题、作者、时间、摘要（≤2000 字）、分类、PDF 与摘要页链接。插件内自动做 3 秒礼貌间隔。",
+  "description": "搜 arXiv 论文（官方 API，免 key）：支持 arXiv 查询语法（如 all:agent AND cat:cs.AI、ti:\"large language model\"），返回 id、标题、作者、时间、摘要（≤2000 字）、分类、PDF 与摘要页链接。sortBy 缺省 relevance（相关度，可能翻出很老的论文）——用户要\"最新/近期\"论文时给 sortBy:\"submittedDate\"，并把主题限定到具体分类或关键词（如 cat:cs.AI AND all:\"LLM agent\"）。插件内自动做 3 秒礼貌间隔。",
   "inputSchema": {
     "type": "object",
     "required": [

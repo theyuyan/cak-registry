@@ -1,7 +1,7 @@
 {
   "name": "test.run",
   "version": "1.0.0",
-  "description": "在工作区内跑测试并返回结构化结果：自动探测框架（vitest/jest/mocha/node --test/pytest/go/cargo/npm test）或指定 custom argv，解析通过/失败/跳过计数与失败列表（名字+消息+文件），附输出尾部。改完代码后一条调用拿到失败清单，不用自己拼命令、啃长输出。副作用 external：默认需要审批。",
+  "description": "在工作区内跑测试并返回结构化结果：自动探测框架（vitest/jest/mocha/node --test/pytest/go/cargo/npm test）或指定 custom argv，解析通过/失败/跳过计数与失败列表（名字+消息+文件），附输出尾部。改完代码后一条调用拿到失败清单，不用自己拼命令、啃长输出。副作用 external：默认需要审批——审批面板显示的就是你填的入参，请把 framework / cwd / filter 显式填上（别传空 {}），用户才看得出将执行什么命令；同一轮别为同一件事重复申请（先带 filter 再不带）。cwd 只能在工作区内（符号链接按真实目标判）。",
   "inputSchema": {
     "type": "object",
     "required": [],
