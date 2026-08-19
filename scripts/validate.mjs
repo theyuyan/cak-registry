@@ -4,6 +4,7 @@ import canonicalize from 'canonicalize';
 const idx = JSON.parse(fs.readFileSync('index.json', 'utf8'));
 let bad = 0; const ok = (c, m) => { console.log(`${c ? '✓' : '✗'} ${m}`); if (!c) bad++; };
 ok(idx.version === 1 && Array.isArray(idx.plugins) && Array.isArray(idx.agents), 'index.json 结构');
+for (const p of idx.plugins) if (p.background !== undefined) ok(typeof p.background === 'boolean', `plugin ${p.id}: background 必须是布尔`);
 for (const p of idx.plugins) if (p.sensitiveReads !== undefined) ok(typeof p.sensitiveReads === 'boolean', `plugin ${p.id}: sensitiveReads 必须是布尔`);
 for (const p of idx.plugins) ok(p.id && p.version && p.kernelCompat && p.entrypoint?.type && Array.isArray(p.contracts) && p.license, `plugin ${p.id}: 必填字段（含 license）`);
 for (const a of idx.agents) ok(a.principal?.kind && a.principal?.id && Array.isArray(a.provides), `agent ${a.principal?.id}: 名片字段`);

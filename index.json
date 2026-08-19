@@ -651,7 +651,8 @@
       ],
       "setup": "无需配置；任务存 ~/.cak/schedule/jobs.json（SCHEDULE_DIR 可改）。",
       "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/schedule",
-      "tier": "T1"
+      "tier": "T1",
+      "background": true
     },
     {
       "id": "test-run",
@@ -978,7 +979,8 @@
       ],
       "setup": "无需配置；数据存 ~/.cak/webhook/hooks.json（WEBHOOK_DIR 可改），端口首次随机 40000-49999 或 WEBHOOK_PORT；默认只监听 127.0.0.1（WEBHOOK_BIND=0.0.0.0 才对外，要放反代/防火墙后）。",
       "source": "https://github.com/theyuyan/cak-plugins/tree/main/plugins/webhook",
-      "tier": "T1"
+      "tier": "T1",
+      "background": true
     },
     {
       "id": "docker",
