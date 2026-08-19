@@ -372,7 +372,8 @@
           "name": "github.query",
           "version": "1.0.0",
           "sampleArgs": {
-            "path": "/rate_limit"
+            "path": "/repos/octocat/Hello-World/commits/7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+            "maxBytes": 4000
           }
         },
         {
@@ -732,7 +733,7 @@
             "paths": [
               "README.md"
             ],
-            "kb": "_conformance"
+            "kb": "conformance"
           }
         },
         {
