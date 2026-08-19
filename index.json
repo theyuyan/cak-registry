@@ -731,7 +731,8 @@
           "sampleArgs": {
             "paths": [
               "README.md"
-            ]
+            ],
+            "kb": "_conformance"
           }
         },
         {
